@@ -184,3 +184,32 @@ body{background:#fffdfa}
 @media(max-width:900px){.shop-filters{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.shop-intro{align-items:start;flex-direction:column}.shop-count{text-align:left}.type-segment{overflow-x:auto}.type-segment button{white-space:nowrap}.shop-filters{grid-template-columns:1fr}.hero-wrap,.story-section,.ai-section,.concierge-section{background-attachment:scroll!important}}
 @media(prefers-reduced-motion:reduce){.hero-wrap,.story-section,.ai-section,.concierge-section{background-attachment:scroll!important}.product-card{transition:none}}
+
+
+/* v5 visual correction: white-first hero, real pagination visibility, calmer catalog */
+.hero-wrap{background:#fffdf9!important;background-image:none!important;color:#241f19!important;min-height:auto!important}
+.hero-wrap .header,.hero-wrap .desktop-nav,.hero-wrap .header-actions{color:#241f19!important}
+.hero-wrap .hero{padding-top:50px;padding-bottom:75px}
+.hero-wrap .hero h1{font-size:clamp(54px,6.5vw,85px);color:#241f19}
+.hero-wrap .hero h1 em{color:#aa8658}
+.hero-wrap .hero-text{color:#71675b!important}
+.hero-wrap .secondary-btn{border:1px solid #d4c6b3;color:#362b1f;background:white}
+.hero-wrap .primary-btn{background:#292219;color:#fff}
+.hero-wrap .floating-note{background:rgba(255,253,249,.94);color:#2e271e;border-color:#eadbc9}
+.hero-wrap .floating-note small,.hero-wrap .floating-note span{color:#76685a}
+.hero-wrap .hero-image-card{border:1px solid #eadfce;box-shadow:0 18px 45px rgba(80,64,41,.12)}
+.shop-v4{padding-top:46px}
+.shop-intro{margin-bottom:20px}
+.shop-intro h1{font-size:clamp(40px,4.8vw,60px)}
+.shop-filters{margin:14px 0 12px;padding:16px}
+.type-segment{margin:20px 0}
+.shop-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 2px;margin:6px 0;color:#75695e;font-size:12px}
+.catalog-pagination.top{margin:0}
+.catalog-pagination.top button{padding:8px 14px}
+.catalog-disclaimer{margin:12px 0 21px}
+.product-image-wrap{background:#f5efe6}
+.product-image{object-fit:contain;padding:8px}
+.product-card-body{padding:15px}
+.product-card h3{font-size:22px}
+.product-card .eyebrow{font-size:10px}
+@media(max-width:650px){.shop-toolbar{flex-direction:column;align-items:flex-start}.catalog-pagination.top{width:100%;justify-content:space-between}.hero-wrap .hero{padding-top:22px}.hero-wrap .hero-visual{order:0}}
