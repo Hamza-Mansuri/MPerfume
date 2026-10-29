@@ -13,7 +13,7 @@ const families=[
 {key:'Spicy',desc:'Bold & distinctive',notes:['Saffron','Cardamom','Cinnamon','Black Pepper','Clove','Nutmeg'],color:'#b77c59'}
 ];
 const aliases={oud:['agarwood','woody','deep'],rose:['floral','romantic'],vanilla:['sweet','gourmand'],musk:['clean','powdery'],bergamot:['citrus','fresh'],sandalwood:['creamy','woody'],amber:['warm','resinous'],saffron:['warm','spicy']};
-const clean=s=>String(s||'').toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\\s+/g,' ').trim();
+const clean=s=>String(s||'').toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
 const texts=p=>[p.name,p.family,p.description,...(p.notes||[]),...(p.mood||[]),...(p.occasion||[]),...(p.season||[])].map(clean);
 function rank(p,notes,query,mood){
  const data=texts(p), itemNotes=(p.notes||[]).map(clean);
