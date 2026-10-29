@@ -6,7 +6,7 @@ export default function ProductCard({ product }) {
     <article className="product-card">
       <Link to={`/product/${product.slug}`} className="product-image-wrap">
         <img src={product.image} alt={product.name} className="product-image" loading="lazy" />
-        <span className="product-type">{product.type}</span>
+        <span className="product-type">{product.type}</span>{product.isDemo&&<span className="product-demo-tag">Concept</span>}
       </Link>
       <div className="product-card-body">
         <div className="product-row">
@@ -14,7 +14,7 @@ export default function ProductCard({ product }) {
             <p className="eyebrow">{product.family}</p>
             <h3>{product.name}</h3>
           </div>
-          <span className="rating"><Star size={14} fill="currentColor"/> {product.rating}</span>
+          {product.rating!=null&&<span className="rating"><Star size={14} fill="currentColor"/> {product.rating}</span>}
         </div>
         <p className="notes">{product.notes.slice(0, 4).join(' · ')}</p>
         <div className="product-row product-bottom">
