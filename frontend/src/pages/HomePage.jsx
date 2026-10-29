@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Header from '../components/Header.jsx';
 import AIFragranceFinder from '../components/AIFragranceFinder.jsx';
 import ProductCarousel from '../components/ProductCarousel.jsx';
+import IngredientAtelier from '../components/IngredientAtelier.jsx';
 import Footer from '../components/Footer.jsx';
 import { demoProducts } from '../data/products.js';
 
@@ -34,6 +35,7 @@ export default function HomePage() {
         <ProductCarousel products={demoProducts.slice(0, 5)} />
       </section>
 
+      <IngredientAtelier />
       <AIFragranceFinder />
 
       <section className="story-section" id="story">
