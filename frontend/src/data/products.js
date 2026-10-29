@@ -127,6 +127,13 @@ const families=[
  ['Incense','Resin • Woody',['Frankincense','Myrrh','Olibanum','Amber','Cedarwood','Elemi','Oud','Benzoin'],['resinous','deep','meditative']]
 ];
 const editions=['Signature','Noir','Elixir','Reserve','Velvet','Soleil','Imperial','Safa','Dusk','Essence'];
+/** Generic illustrated attar bottle, intentionally unbranded. No competitor imagery. */
+const attarIllustration=(index=0)=>{
+ const tones=[['#d9a448','#faf1dc'],['#ab7b43','#f4e6cc'],['#d5bc73','#faf5e8'],['#a57455','#f3e8dd'],['#c49b61','#fbf0db']];
+ const [oil,bg]=tones[index%tones.length];
+ const xml=`<svg xmlns="http://www.w3.org/2000/svg" width="700" height="840" viewBox="0 0 700 840"><defs><linearGradient id="glass" x2="1" y2="1"><stop stop-color="#fff" stop-opacity=".9"/><stop offset=".4" stop-color="#d5bf9b" stop-opacity=".2"/><stop offset="1" stop-color="#fff" stop-opacity=".8"/></linearGradient><linearGradient id="liquid" x2="0" y2="1"><stop stop-color="${oil}" stop-opacity=".62"/><stop offset="1" stop-color="${oil}"/></linearGradient></defs><rect width="700" height="840" fill="${bg}"/><circle cx="580" cy="160" r="230" fill="#fff" opacity=".3"/><ellipse cx="350" cy="710" rx="170" ry="26" fill="#a48a65" opacity=".13"/><rect x="287" y="135" width="126" height="115" rx="16" fill="#b38b4b"/><path d="M287 188H413" stroke="#f4d89b" stroke-width="9"/><path d="M287 214H413" stroke="#795b34" stroke-width="4"/><rect x="318" y="225" width="64" height="60" rx="10" fill="#e5d1a7"/><rect x="216" y="265" width="268" height="412" rx="62" fill="url(#glass)" stroke="#d0b990" stroke-width="9"/><path d="M228 435H472V614Q472 664 419 664H281Q228 664 228 614Z" fill="url(#liquid)"/><rect x="248" y="374" width="204" height="190" rx="8" fill="#fffaf0" opacity=".93"/><path d="M280 399H420M280 535H420" stroke="#b49a6c" stroke-width="2"/><text x="350" y="455" fill="#705738" text-anchor="middle" font-family="Georgia,serif" font-size="37">ATTAR</text><text x="350" y="488" fill="#937a57" text-anchor="middle" font-family="Arial,sans-serif" font-size="15" letter-spacing="5">CONCEPT</text><path d="M245 330Q230 540 246 615" fill="none" stroke="#fff" stroke-opacity=".66" stroke-width="20" stroke-linecap="round"/></svg>`;
+ return 'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(xml);
+};
 const editorialPhotography=[
  'photo-1541643600914-78b084683601','photo-1594035910387-fea47794261f',
  'photo-1615634262417-98ba03d7ce2c','photo-1587017539504-67cfbddac569',
@@ -142,7 +149,7 @@ export const expandedDemoProducts=families.flatMap(([name,family,notes,mood],fam
   price:type==='Attar'?699+(familyIndex%6)*140+editionIndex*45:1299+(familyIndex%6)*190+editionIndex*75,
   size:type==='Attar'?'12 ml':'50 ml',
   rating:null, 
-  image:'https://images.unsplash.com/'+editorialPhotography[(familyIndex+editionIndex+typeIndex)%editorialPhotography.length]+'?auto=format&fit=crop&w=1000&q=85',
+  image:type==='Attar'?attarIllustration(familyIndex+editionIndex):'https://images.unsplash.com/'+editorialPhotography[(familyIndex+editionIndex+typeIndex)%editorialPhotography.length]+'?auto=format&fit=crop&w=1000&q=85',
   imageIsIllustrative:true,isDemo:true,
   family,notes:selected,topNotes:selected.slice(0,1),heartNotes:selected.slice(1,3),baseNotes:selected.slice(3),
   longevity:'Varies by formulation',projection:'Not verified',
@@ -150,5 +157,5 @@ export const expandedDemoProducts=families.flatMap(([name,family,notes,mood],fam
   description:'A concept '+type.toLowerCase()+' built around '+selected.join(', ')+'. Demonstration profile only; formulation and performance are not verified.'
  };
  })));
-export const demoProducts=[...originalProducts.map(p=>({...p,isDemo:true,imageIsIllustrative:true})),...expandedDemoProducts];
+export const demoProducts=[...originalProducts.map((p,i)=>({...p,isDemo:true,imageIsIllustrative:true,image:p.type==='Attar'?attarIllustration(i):p.image})),...expandedDemoProducts];
 export const fragranceNoteLibrary=[...new Set(families.flatMap(f=>f[2]))].sort();
