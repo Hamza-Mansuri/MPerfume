@@ -79,3 +79,4 @@ export default function ScentConcierge(){
     <div className="concierge-insight"><Leaf size={18}/><div><strong>Did you know?</strong><p>Top, heart and base notes describe how a fragrance may unfold over time. A fragrance “note” can be a complete accord—not necessarily one physical ingredient.</p></div></div>
     <p className="concierge-footnote">Interactive demo · {"AI explanation enabled when configured; otherwise local catalog matching."} Fragrance descriptions are educational; inventory, prices and actual formulas require merchant verification.</p>
   </aside></div></div></section>;
+}

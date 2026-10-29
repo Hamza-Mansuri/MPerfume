@@ -19,7 +19,7 @@ Premium AI-assisted fragrance discovery and commerce experience for attars, perf
 2. `npm run install:all`
 3. `npm run dev`
 
-Frontend: `http://localhost:5173`  
+Frontend: `http://localhost:5175`  
 Backend: `http://localhost:5000`
 
 ## Security

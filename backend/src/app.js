@@ -10,7 +10,7 @@ import recommendationRoutes from './routes/recommendationRoutes.js';
 const app=express();
 app.set('trust proxy',1);
 app.use(helmet({crossOriginResourcePolicy:{policy:'cross-origin'}}));
-app.use(cors({origin:(process.env.CLIENT_URL||'http://localhost:5173').split(','),credentials:true}));
+app.use(cors({origin:(process.env.CLIENT_URL||'http://localhost:5175').split(','),credentials:true}));
 app.use(express.json({limit:'1mb'}));
 app.use(morgan(process.env.NODE_ENV==='production'?'combined':'dev'));
 app.use(rateLimit({windowMs:Number(process.env.RATE_LIMIT_WINDOW_MS||900000),limit:Number(process.env.RATE_LIMIT_MAX||100),standardHeaders:true,legacyHeaders:false}));
