@@ -41,11 +41,26 @@ export default function ScentConcierge(){
  const [request,setRequest]=useState(0);
  const [loading,setLoading]=useState(false);
  const [revealed,setRevealed]=useState(false);
+ const [aiExplanation,setAiExplanation]=useState('');
+ const [aiMode,setAiMode]=useState('catalog-matching');
  const groups=['All',...new Set(notes.map(n=>n.family))];
  const profile=profiles.find(p=>p.name===mood);
  const results=useMemo(()=>demoProducts.map(p=>scoreProduct(p,chosen,profile,text)).filter(p=>p.matchScore>0).sort((a,b)=>b.matchScore-a.matchScore).slice(0,3),[chosen,profile,text]);
  const ready=chosen.length>0||mood||text.trim();
- useEffect(()=>{if(!request)return;setLoading(true);setRevealed(false);const t=setTimeout(()=>{setLoading(false);setRevealed(true)},650);return()=>clearTimeout(t)},[request]);
+ useEffect(()=>{
+  if(!request)return;
+  const abort=new AbortController();
+  setLoading(true);setRevealed(false);setAiExplanation('');setAiMode('catalog-matching');
+  const timer=setTimeout(async()=>{
+   try{
+    const base=import.meta.env.VITE_API_URL||'http://localhost:5000/api';
+    const response=await fetch(base+'/recommendations/concierge',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({notes:chosen,mood,description:text}),signal:abort.signal});
+    if(response.ok){const data=await response.json();if(!abort.signal.aborted){setAiExplanation(data.explanation||'');setAiMode(data.mode||'catalog-matching')}}
+   }catch(e){if(e.name!=='AbortError')console.info('Using local fragrance matching')}
+   if(!abort.signal.aborted){setLoading(false);setRevealed(true)}
+  },500);
+  return()=>{clearTimeout(timer);abort.abort()};
+ },[request]);
  function chooseNote(name){setChosen(old=>old.includes(name)?old.filter(x=>x!==name):old.length<4?[...old,name]:old);setRevealed(false)}
  function reset(){setChosen([]);setMood('');setText('');setRevealed(false);setFocus('All')}
  const search=()=>{if(ready)setRequest(x=>x+1)};
@@ -60,7 +75,7 @@ export default function ScentConcierge(){
     <div className="concierge-step ingredient-step"><span>03</span><div><h3>Tell us anything else</h3><p>An occasion, a memory, an ingredient or a mood.</p></div></div><div className="concierge-input-row"><input value={text} onChange={e=>{setText(e.target.value);setRevealed(false)}} onKeyDown={e=>e.key==='Enter'&&search()} placeholder="e.g. elegant evening scent with rose & oud" aria-label="Describe your ideal fragrance"/><button onClick={search} disabled={!ready||loading}><Sparkles size={16}/> Find my scent</button></div>
   </div><aside className="concierge-output" aria-live="polite"><div className="concierge-output-header"><div><span className="eyebrow">02 / Your fragrance profile</span><h3>Curated for you.</h3></div><button onClick={reset} aria-label="Reset choices"><RotateCcw size={17}/></button></div>
     <div className="selected-profile">{mood&&<span>{mood}</span>}{chosen.map(n=><span key={n}>{n}</span>)}{!ready&&<p>Your fragrance story begins with a single note.</p>}</div>
-    {loading?<div className="concierge-skeleton"><span className="skeleton-bar"/><span className="skeleton-bar short"/>{[1,2,3].map(n=><div key={n} className="skeleton-card"><div className="skeleton-photo"/><div><span className="skeleton-bar"/><span className="skeleton-bar short"/><span className="skeleton-bar"/></div></div>)}</div>:revealed?<><div className="concierge-analysis"><Sparkles size={18}/><p>{results.length?'Your profile leans toward '+(mood||'the notes you selected').toLowerCase()+'. These recommendations are ranked by catalog note overlap and scent character.':'No matching product is listed in this demo catalog yet. Try a different note or mood.'}</p></div><div className="concierge-result-list">{results.map((p,i)=><Link key={p.slug} to={'/product/'+p.slug} className="concierge-result"><div className="concierge-result-image"><img src={p.image} alt={p.name} loading="lazy"/></div><div><span className="concierge-result-eyebrow">{i===0?'BEST MATCH':'ALTERNATIVE'} · {p.type}</span><h4>{p.name}</h4><p>{p.reasons.length?p.reasons.slice(0,2).join(' · '):p.notes.join(' · ')}</p><strong>₹{p.price.toLocaleString('en-IN')}</strong></div><ArrowUpRight size={18}/></Link>)}</div></>:<div className="concierge-placeholder"><div className="concierge-illustration"><span>OUD</span><span>ROSE</span><span>MUSK</span></div><h4>The art of finding your scent</h4><p>Choose the notes that speak to you, then reveal your personal fragrance recommendations.</p><button onClick={search} disabled={!ready}>Reveal my matches <ArrowRight size={16}/></button></div>}
+    {loading?<div className="concierge-skeleton"><span className="skeleton-bar"/><span className="skeleton-bar short"/>{[1,2,3].map(n=><div key={n} className="skeleton-card"><div className="skeleton-photo"/><div><span className="skeleton-bar"/><span className="skeleton-bar short"/><span className="skeleton-bar"/></div></div>)}</div>:revealed?<><div className="concierge-analysis"><Sparkles size={18}/><p>{results.length?''+(aiExplanation||('Your profile leans toward '+(mood||'the notes you selected').toLowerCase()+'. These recommendations are ranked by catalog note overlap and scent character.'))+'':'No matching product is listed in this demo catalog yet. Try a different note or mood.'}</p></div><div className="concierge-result-list">{results.map((p,i)=><Link key={p.slug} to={'/product/'+p.slug} className="concierge-result"><div className="concierge-result-image"><img src={p.image} alt={p.name} loading="lazy"/></div><div><span className="concierge-result-eyebrow">{i===0?'BEST MATCH':'ALTERNATIVE'} · {p.type}</span><h4>{p.name}</h4><p>{p.reasons.length?p.reasons.slice(0,2).join(' · '):p.notes.join(' · ')}</p><strong>₹{p.price.toLocaleString('en-IN')}</strong></div><ArrowUpRight size={18}/></Link>)}</div></>:<div className="concierge-placeholder"><div className="concierge-illustration"><span>OUD</span><span>ROSE</span><span>MUSK</span></div><h4>The art of finding your scent</h4><p>Choose the notes that speak to you, then reveal your personal fragrance recommendations.</p><button onClick={search} disabled={!ready}>Reveal my matches <ArrowRight size={16}/></button></div>}
     <div className="concierge-insight"><Leaf size={18}/><div><strong>Did you know?</strong><p>Top, heart and base notes describe how a fragrance may unfold over time. A fragrance “note” can be a complete accord—not necessarily one physical ingredient.</p></div></div>
-    <p className="concierge-footnote">Interactive demo · Catalog-grounded recommendation engine, not a generative AI model. Fragrance descriptions are educational; inventory, prices and actual formulas require merchant verification.</p>
+    <p className="concierge-footnote">Interactive demo · {"AI explanation enabled when configured; otherwise local catalog matching."} Fragrance descriptions are educational; inventory, prices and actual formulas require merchant verification.</p>
   </aside></div></div></section>;
