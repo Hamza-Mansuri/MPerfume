@@ -1,4 +1,4 @@
-export const demoProducts = [
+const originalProducts = [
   {
     id: 'oud-royale',
     slug: 'oud-royale',
@@ -107,4 +107,48 @@ export const demoProducts = [
     mood: ['sweet', 'deep', 'warm', 'sensual'],
     description: 'Creamy vanilla meets dark oud and tonka for a rich, addictive trail.'
   }
+ ];
+/** Editorial demo catalog — not verified Motiwala inventory.
+ * Replace with owner-approved SKUs, photography and pricing before commerce launch. */
+const families=[
+ ['Oud','Woody • Amber',['Oud','Saffron','Amber','Patchouli','Rose','Labdanum','Leather','Cedarwood'],['luxurious','warm','deep']],
+ ['Rose','Floral • Musk',['Rose','Jasmine','Peony','White Musk','Geranium','Iris','Amber','Violet'],['romantic','soft','floral']],
+ ['Musk','Clean • Musk',['White Musk','Ambrette','Cotton','Iris','Sandalwood','Aldehydes','Cashmeran','Lily'],['clean','soft','calm']],
+ ['Citrus','Fresh • Citrus',['Bergamot','Lemon','Mandarin','Grapefruit','Neroli','Petitgrain','Green Tea','Vetiver'],['fresh','clean','energetic']],
+ ['Amber','Amber • Resin',['Amber','Labdanum','Benzoin','Vanilla','Myrrh','Frankincense','Tonka','Cistus'],['warm','bold','sensual']],
+ ['Sandal','Woody • Creamy',['Sandalwood','Cedarwood','Vetiver','Cardamom','Musk','Iris','Fig','Guaiac Wood'],['calm','creamy','woody']],
+ ['Floral','White Floral',['Jasmine','Tuberose','Orange Blossom','Ylang-Ylang','Gardenia','Magnolia','Neroli','Lily'],['floral','elegant','romantic']],
+ ['Spice','Spicy • Woody',['Cardamom','Saffron','Black Pepper','Cinnamon','Clove','Nutmeg','Ginger','Cedarwood'],['bold','spicy','warm']],
+ ['Gourmand','Gourmand • Amber',['Vanilla','Tonka','Cacao','Coffee','Praline','Caramel','Benzoin','Honey'],['sweet','comforting','warm']],
+ ['Green','Green • Aromatic',['Vetiver','Green Tea','Basil','Mint','Sage','Lavender','Galbanum','Fig Leaf'],['green','fresh','earthy']],
+ ['Aquatic','Aquatic • Fresh',['Sea Salt','Marine Accord','Calone','Lemon','Water Lily','Driftwood','Musk','Bergamot'],['aquatic','fresh','clean']],
+ ['Leather','Leather • Smoky',['Leather','Birch Tar','Oud','Tobacco','Amber','Saffron','Patchouli','Incense'],['smoky','deep','bold']],
+ ['Fruit','Fruity • Floral',['Pear','Apple','Blackcurrant','Peach','Raspberry','Rose','Musk','Mandarin'],['juicy','fresh','playful']],
+ ['Incense','Resin • Woody',['Frankincense','Myrrh','Olibanum','Amber','Cedarwood','Elemi','Oud','Benzoin'],['resinous','deep','meditative']]
 ];
+const editions=['Signature','Noir','Elixir','Reserve','Velvet','Soleil','Imperial','Safa','Dusk','Essence'];
+const editorialPhotography=[
+ 'photo-1541643600914-78b084683601','photo-1594035910387-fea47794261f',
+ 'photo-1615634262417-98ba03d7ce2c','photo-1587017539504-67cfbddac569',
+ 'photo-1592945403244-b3fbafd7f539','photo-1619994403073-2cec844b8e63'
+];
+export const expandedDemoProducts=families.flatMap(([name,family,notes,mood],familyIndex)=>
+ editions.flatMap((edition,editionIndex)=>['Attar','Perfume'].map((type,typeIndex)=>{
+ const id='demo-'+name.toLowerCase()+'-'+edition.toLowerCase()+'-'+type.toLowerCase();
+ const rotation=(editionIndex*2+typeIndex)%notes.length;
+ const selected=[notes[rotation],notes[(rotation+1)%notes.length],notes[(rotation+3)%notes.length],notes[(rotation+5)%notes.length]];
+ return {
+  id,slug:id,name:name+' '+edition,type,
+  price:type==='Attar'?699+(familyIndex%6)*140+editionIndex*45:1299+(familyIndex%6)*190+editionIndex*75,
+  size:type==='Attar'?'12 ml':'50 ml',
+  rating:null, 
+  image:'https://images.unsplash.com/'+editorialPhotography[(familyIndex+editionIndex+typeIndex)%editorialPhotography.length]+'?auto=format&fit=crop&w=1000&q=85',
+  imageIsIllustrative:true,isDemo:true,
+  family,notes:selected,topNotes:selected.slice(0,1),heartNotes:selected.slice(1,3),baseNotes:selected.slice(3),
+  longevity:'Varies by formulation',projection:'Not verified',
+  season:['All season'],occasion:['Daily','Evening'],mood,
+  description:'A concept '+type.toLowerCase()+' built around '+selected.join(', ')+'. Demonstration profile only; formulation and performance are not verified.'
+ };
+ })));
+export const demoProducts=[...originalProducts.map(p=>({...p,isDemo:true,imageIsIllustrative:true})),...expandedDemoProducts];
+export const fragranceNoteLibrary=[...new Set(families.flatMap(f=>f[2]))].sort();
