@@ -148,3 +148,39 @@ body{background:#fffdfa}
 @media(max-width:920px){.concierge-layout{grid-template-columns:1fr}.concierge-output{position:static}.concierge-heading{align-items:start}.concierge-seal{display:none}}
 @media(max-width:580px){.concierge-section{padding:68px 0}.concierge-studio,.concierge-output{padding:19px 15px;border-radius:21px}.mood-grid{grid-template-columns:repeat(2,1fr)}.concierge-notes{grid-template-columns:1fr}.ingredient-tile{min-height:0}.concierge-input-row{flex-direction:column}.concierge-heading h2{font-size:42px}}
 @media(prefers-reduced-motion:reduce){.skeleton-bar,.skeleton-photo{animation:none}.mood-tile{transition:none}}
+
+
+/* MP v4 — gallery-like white storefront and restrained parallax */
+.hero-wrap{background:linear-gradient(110deg,rgba(255,255,255,.97),rgba(252,249,243,.91)),url('https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=2000&q=75') center/cover fixed!important;color:#26211a!important;min-height:710px}
+.hero-wrap .hero-text{color:#766b60}
+.catalog-header{background:#fffdfa;border-bottom:1px solid #efe8dd}
+.shop-v4{padding-top:65px}
+.shop-intro{display:flex;align-items:end;justify-content:space-between;gap:30px;margin-bottom:30px}
+.shop-intro h1{font:600 clamp(42px,5.3vw,70px)/1.04 'Playfair Display',serif;margin-bottom:20px}
+.shop-intro h1 em{color:#a7875d}
+.shop-intro p{color:#807468;line-height:1.7;max-width:570px}
+.shop-count{text-align:right;display:flex;flex-direction:column;min-width:170px}
+.shop-count strong{font:600 42px 'Playfair Display',serif}
+.shop-count span{font-size:11px;color:#8b7f73}
+.type-segment{display:flex;gap:8px;margin:30px 0}
+.type-segment button{padding:13px 24px;border-radius:12px;background:#f6f1e9;border:1px solid #eee4d6;color:#65564a}
+.type-segment button.active{background:#282119;color:white;border-color:#282119}
+.shop-filters{display:grid;grid-template-columns:1.5fr 1fr 1fr .9fr;gap:13px;padding:22px;border:1px solid #ebe2d6;border-radius:18px;background:white;margin-bottom:18px}
+.shop-filters label{display:flex;flex-direction:column;gap:8px}
+.shop-filters label span{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#8a7966}
+.shop-filters input,.shop-filters select{padding:12px 11px;width:100%;min-width:0;border:1px solid #e7ddd0;border-radius:9px;background:#fffdfa;color:#322920;outline-color:#bd9e70}
+.catalog-disclaimer{font-size:11px;color:#86786a;line-height:1.6;margin-bottom:25px;padding-left:12px;border-left:2px solid #c5ab83}
+.product-card{position:relative;transition:transform .22s,box-shadow .22s}
+.product-card:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(62,43,22,.08)}
+.product-demo-tag{position:absolute;right:12px;top:14px;font-size:9px;text-transform:uppercase;letter-spacing:.1em;padding:7px 9px;background:#fffaf2;border:1px solid #e7d8be;border-radius:30px;color:#826741}
+.catalog-pagination{display:flex;justify-content:center;align-items:center;gap:25px;margin:36px 0 0}
+.catalog-pagination button,.catalog-no-results button{border:1px solid #cdbb9f;padding:11px 18px;border-radius:25px;background:#fff}
+.catalog-pagination button:disabled{opacity:.35;cursor:not-allowed}
+.catalog-pagination span{font-size:12px;color:#817568}
+.catalog-no-results{padding:70px 0;text-align:center}
+.story-section{background:linear-gradient(120deg,rgba(250,247,241,.96),rgba(239,231,220,.9)),url('https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=1800&q=75') center/cover fixed}
+.ai-section{background:linear-gradient(135deg,rgba(255,255,255,.95),rgba(245,239,229,.97)),url('https://images.unsplash.com/photo-1615634262417-98ba03d7ce2c?auto=format&fit=crop&w=1800&q=70') center/cover fixed;padding-top:60px}
+.concierge-section{background:linear-gradient(135deg,rgba(255,253,249,.98),rgba(247,242,233,.96)),url('https://images.unsplash.com/photo-1587017539504-67cfbddac569?auto=format&fit=crop&w=1600&q=70') center/cover fixed}
+@media(max-width:900px){.shop-filters{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.shop-intro{align-items:start;flex-direction:column}.shop-count{text-align:left}.type-segment{overflow-x:auto}.type-segment button{white-space:nowrap}.shop-filters{grid-template-columns:1fr}.hero-wrap,.story-section,.ai-section,.concierge-section{background-attachment:scroll!important}}
+@media(prefers-reduced-motion:reduce){.hero-wrap,.story-section,.ai-section,.concierge-section{background-attachment:scroll!important}.product-card{transition:none}}
