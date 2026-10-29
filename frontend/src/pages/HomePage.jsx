@@ -1,7 +1,6 @@
 import { ArrowRight, Sparkles, ShieldCheck, Truck, FlaskConical } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header.jsx';
-import AIFragranceFinder from '../components/AIFragranceFinder.jsx';
 import ProductCarousel from '../components/ProductCarousel.jsx';
 import ScentConcierge from '../components/ScentConcierge.jsx';
 import Footer from '../components/Footer.jsx';
@@ -14,9 +13,9 @@ export default function HomePage() {
         <Header />
         <section className="hero shell">
           <div className="hero-copy">
-            <p className="eyebrow">Attar heritage × modern intelligence</p>
+            <p className="eyebrow">Motiwala · Fragrance discovery</p>
             <h1>Find the scent<br/>that feels <em>like you.</em></h1>
-            <p className="hero-text">Discover handcrafted attars and perfumes by note, mood, memory and occasion — with an AI-assisted fragrance guide built around our real collection.</p>
+            <p className="hero-text">Explore attars and perfumes by scent family, ingredient and occasion. Your fragrance journey, made beautifully simple.</p>
             <div className="hero-actions"><a href="#scent-concierge" className="primary-btn"><Sparkles size={17}/> Find my scent</a><Link to="/shop" className="secondary-btn">Explore collection <ArrowRight size={16}/></Link></div>
             <div className="trust-row"><span><ShieldCheck size={16}/> Explore scent families</span><span><Truck size={16}/> Perfume & attar</span><span><FlaskConical size={16}/> Curated notes</span></div>
           </div>
@@ -36,7 +35,6 @@ export default function HomePage() {
       </section>
 
       <ScentConcierge />
-      <AIFragranceFinder />
 
       <section className="story-section" id="story">
         <div className="shell story-grid">
