@@ -177,10 +177,29 @@ export default function CnoFormPage() {
       const result = await createCnoSample(payload);
       setSuccessResult(result);
       setLoading(false);
-      // Auto reload next serial for subsequent entry
-      setTimeout(() => {
-        loadSerial();
-      }, 500);
+
+      // Reset / empty all form input fields ready for next sample
+      setSupplierName('');
+      setCode('');
+      setInspiration('');
+      setIdealFor('Unisex');
+      setSuitableFor(['Perfume', 'Attar']);
+      setBoxesReceived(1);
+      setUsedInProduct('');
+      setProfile('French');
+      setSampleDate(new Date().toISOString().slice(0, 10));
+      setReceivedDate(new Date().toISOString().slice(0, 10));
+      const now = new Date();
+      setReceivedTime(`${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`);
+      setConcentrateLongevity('8h+');
+      setTemperature('32°C');
+      setSprayLongevity('12h+');
+      setRemarks('');
+      setSuggestions([]);
+      setShowSuggestions(false);
+
+      // Auto reload next sequential serial number
+      await loadSerial();
     } catch (err) {
       setErrorMsg(err.message || 'Error saving CNO sample to database.');
       setLoading(false);
@@ -741,3 +760,4 @@ export default function CnoFormPage() {
     </div>
   );
 }
+
