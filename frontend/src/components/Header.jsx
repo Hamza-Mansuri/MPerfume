@@ -1,4 +1,4 @@
-import { Menu, Search, ShoppingBag, UserRound } from 'lucide-react';
+import { Menu, Search, ShoppingBag, UserRound, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function Header() {
@@ -12,11 +12,18 @@ export default function Header() {
         <Link to="/shop">Shop</Link>
         <a href="#discover">AI Discovery</a>
         <a href="#story">Our Story</a>
+        <Link to="/ar/cno" className="ar-nav-pill" title="Admin Rights - Business Portal">
+          <ShieldCheck size={13} strokeWidth={2.5} />
+          <span>AR (Admin Rights)</span>
+        </Link>
       </nav>
       <div className="header-actions">
         <button className="icon-button" aria-label="Search"><Search size={19}/></button>
         <Link className="icon-button" to="/login" aria-label="Account"><UserRound size={19}/></Link>
         <button className="icon-button" aria-label="Cart"><ShoppingBag size={19}/></button>
+        <Link to="/ar/cno" className="icon-button mobile-only" aria-label="Admin Rights" title="AR">
+          <ShieldCheck size={19} style={{ color: 'var(--ar-green, #99c229)' }} />
+        </Link>
         <button className="icon-button mobile-only" aria-label="Menu"><Menu size={20}/></button>
       </div>
     </header>
