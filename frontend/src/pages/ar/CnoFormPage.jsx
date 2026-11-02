@@ -13,6 +13,7 @@ import {
   ExternalLink,
   ChevronDown,
   Clock,
+  Calendar,
   Thermometer,
   Layers,
   FileCheck,
@@ -336,13 +337,16 @@ export default function CnoFormPage() {
                   <label className="ar-label">
                     <span>Sample Date <span className="req">*</span></span>
                   </label>
-                  <input
-                    type="date"
-                    className="ar-input"
-                    value={sampleDate}
-                    onChange={(e) => setSampleDate(e.target.value)}
-                    required
-                  />
+                  <div className="ar-date-input-wrap">
+                    <Calendar size={15} className="ar-date-icon" />
+                    <input
+                      type="date"
+                      className="ar-input"
+                      value={sampleDate}
+                      onChange={(e) => setSampleDate(e.target.value)}
+                      required
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -554,12 +558,15 @@ export default function CnoFormPage() {
                   <label className="ar-label">
                     <span>Date of Receiving</span>
                   </label>
-                  <input
-                    type="date"
-                    className="ar-input"
-                    value={receivedDate}
-                    onChange={(e) => setReceivedDate(e.target.value)}
-                  />
+                  <div className="ar-date-input-wrap">
+                    <Calendar size={15} className="ar-date-icon" />
+                    <input
+                      type="date"
+                      className="ar-input"
+                      value={receivedDate}
+                      onChange={(e) => setReceivedDate(e.target.value)}
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -569,12 +576,15 @@ export default function CnoFormPage() {
                   <label className="ar-label">
                     <span>Time</span>
                   </label>
-                  <input
-                    type="time"
-                    className="ar-input"
-                    value={receivedTime}
-                    onChange={(e) => setReceivedTime(e.target.value)}
-                  />
+                  <div className="ar-date-input-wrap">
+                    <Clock size={15} className="ar-date-icon" />
+                    <input
+                      type="time"
+                      className="ar-input"
+                      value={receivedTime}
+                      onChange={(e) => setReceivedTime(e.target.value)}
+                    />
+                  </div>
                 </div>
 
                 {/* Concentrate Longevity */}
@@ -658,11 +668,11 @@ export default function CnoFormPage() {
                 disabled={loading}
               >
                 {loading ? (
-                  <span>Saving to Atlas...</span>
+                  <span>Saving...</span>
                 ) : (
                   <>
                     <Save size={16} />
-                    <span>Save to Atlas Database</span>
+                    <span>Save</span>
                   </>
                 )}
               </button>

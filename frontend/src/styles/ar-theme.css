@@ -368,7 +368,7 @@
   color: var(--ar-text-muted);
 }
 
-/* Input, Select, Textarea */
+/* Input, Select, Textarea - Mredesign Modern Standard */
 .ar-input,
 .ar-select,
 .ar-textarea {
@@ -376,12 +376,23 @@
   color: #111827;
   border: 1px solid var(--ar-border-input);
   border-radius: 8px;
-  padding: 8.5px 12px;
+  height: 38px;
+  min-height: 38px;
+  padding: 6px 12px;
   font-size: 13px;
+  font-weight: 500;
   font-family: inherit;
-  transition: all 0.15s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   width: 100%;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.ar-input:hover:not(:disabled),
+.ar-select:hover:not(:disabled),
+.ar-textarea:hover:not(:disabled) {
+  border-color: #94a3b8;
 }
 
 .ar-input:focus,
@@ -390,20 +401,147 @@
   border-color: var(--ar-green);
   outline: none;
   box-shadow: 0 0 0 3px var(--ar-green-ring);
+  background-color: #ffffff;
 }
 
+/* Custom Select Dropdowns */
 .ar-select {
   cursor: pointer;
   appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23475569' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
   background-repeat: no-repeat;
-  background-position: right 10px center;
+  background-position: right 11px center;
   background-size: 14px 10px;
-  padding-right: 32px;
+  padding-right: 36px;
+  padding-left: 12px;
+  line-height: 1.5;
+}
+
+.ar-select:hover:not(:disabled) {
+  border-color: var(--ar-green);
+}
+
+.ar-select option {
+  background-color: #ffffff;
+  color: #111827;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 12px;
+}
+
+.ar-select option:checked {
+  background-color: var(--ar-green);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Date and Time Pickers */
+input[type='date'].ar-input,
+input[type='time'].ar-input,
+.ar-date-input {
+  accent-color: var(--ar-green);
+  cursor: pointer;
+  height: 38px;
+  min-height: 38px;
+  color: #111827;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+}
+
+input[type='date']::-webkit-calendar-picker-indicator,
+input[type='time']::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.65;
+  transition: opacity 0.15s ease, filter 0.15s ease;
+  padding: 4px;
+  margin-right: -2px;
+}
+
+input[type='date']::-webkit-calendar-picker-indicator:hover,
+input[type='time']::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+  filter: invert(48%) sepia(82%) saturate(382%) hue-rotate(44deg) brightness(94%) contrast(89%);
+}
+
+/* Date wrapper with icon */
+.ar-date-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.ar-date-input-wrap .ar-date-icon {
+  position: absolute;
+  left: 11px;
+  color: #64748b;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.ar-date-input-wrap input.ar-input {
+  padding-left: 34px;
+}
+
+/* Date filter widget for table header */
+.ar-date-filter-box {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid var(--ar-border-input);
+  border-radius: 8px;
+  padding: 0 8px 0 10px;
+  height: 38px;
+  gap: 6px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ar-date-filter-box:hover {
+  border-color: #94a3b8;
+}
+
+.ar-date-filter-box:focus-within {
+  border-color: var(--ar-green);
+  box-shadow: 0 0 0 3px var(--ar-green-ring);
+}
+
+.ar-date-filter-box input[type='date'] {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  height: 100% !important;
+  padding: 0 !important;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #111827;
+  cursor: pointer;
+  width: 125px;
+}
+
+.ar-date-clear-btn {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  padding: 2px;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  border-radius: 4px;
+  transition: color 0.15s ease;
+}
+
+.ar-date-clear-btn:hover {
+  color: #e11d48;
 }
 
 .ar-textarea {
   min-height: 80px;
+  height: auto;
+  padding: 8.5px 12px;
   resize: vertical;
 }
 

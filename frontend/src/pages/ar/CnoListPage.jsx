@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   ListFilter,
@@ -11,6 +11,7 @@ import {
   Trash2,
   X,
   RotateCw,
+  RotateCcw,
   FlaskConical,
   Calendar,
   Layers,
@@ -30,22 +31,19 @@ export default function CnoListPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [idealForFilter, setIdealForFilter] = useState('All');
   const [profileFilter, setProfileFilter] = useState('All');
+  const [dateFilter, setDateFilter] = useState('');
 
   // Selected sample for view modal
   const [activeModalSample, setActiveModalSample] = useState(null);
 
   useEffect(() => {
     loadSamples();
-  }, [idealForFilter, profileFilter]);
+  }, []);
 
   async function loadSamples() {
     setLoading(true);
     try {
-      const res = await getCnoSamples({
-        q: searchTerm,
-        idealFor: idealForFilter,
-        profile: profileFilter,
-      });
+      const res = await getCnoSamples({});
       setSamples(res.samples || []);
     } catch (e) {
       console.error('Error loading samples:', e);
@@ -54,9 +52,56 @@ export default function CnoListPage() {
     }
   }
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    loadSamples();
+  // Reactive live filtering across all dimensions
+  const filteredSamples = useMemo(() => {
+    return samples.filter((s) => {
+      // 1. Gender / Ideal For
+      if (idealForFilter !== 'All') {
+        const itemGender = (s.idealFor || '').trim().toLowerCase();
+        const targetGender = idealForFilter.toLowerCase();
+        if (itemGender !== targetGender) return false;
+      }
+
+      // 2. Olfactory Profile
+      if (profileFilter !== 'All') {
+        const itemProfile = (s.profile || '').trim().toLowerCase();
+        const targetProfile = profileFilter.toLowerCase();
+        if (!itemProfile.includes(targetProfile)) return false;
+      }
+
+      // 3. Date Filter (matches sampleDate or receivedDate YYYY-MM-DD)
+      if (dateFilter) {
+        const sDate = s.sampleDate ? s.sampleDate.slice(0, 10) : '';
+        const rDate = s.receivedDate ? s.receivedDate.slice(0, 10) : '';
+        if (sDate !== dateFilter && rDate !== dateFilter) return false;
+      }
+
+      // 4. Search query
+      if (searchTerm.trim()) {
+        const q = searchTerm.toLowerCase();
+        const matchSerial = (s.serialNo || '').toLowerCase().includes(q);
+        const matchCode = (s.code || '').toLowerCase().includes(q);
+        const matchSupplier = (s.supplierName || '').toLowerCase().includes(q);
+        const matchInspiration = (s.inspiration || '').toLowerCase().includes(q);
+        const matchProduct = (s.usedInProduct || '').toLowerCase().includes(q);
+        const matchRemarks = (s.remarks || '').toLowerCase().includes(q);
+        const matchProfile = (s.profile || '').toLowerCase().includes(q);
+        if (!matchSerial && !matchCode && !matchSupplier && !matchInspiration && !matchProduct && !matchRemarks && !matchProfile) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }, [samples, searchTerm, idealForFilter, profileFilter, dateFilter]);
+
+  const isFiltered = searchTerm.trim() !== '' || idealForFilter !== 'All' || profileFilter !== 'All' || dateFilter !== '';
+
+  const handleClearFilters = () => {
+    setSearchTerm('');
+    setIdealForFilter('All');
+    setProfileFilter('All');
+    setDateFilter('');
   };
 
   const handleDelete = async (id, serial) => {
@@ -104,12 +149,12 @@ export default function CnoListPage() {
           <button
             type="button"
             className="ar-btn-secondary"
-            onClick={() => exportCnoToExcel(samples, `Motiwala_CNO_Registry_${new Date().toISOString().slice(0, 10)}.xlsx`)}
-            disabled={!samples.length}
-            title="Download full registry as Excel (.xlsx)"
+            onClick={() => exportCnoToExcel(filteredSamples, `Motiwala_CNO_Registry_${new Date().toISOString().slice(0, 10)}.xlsx`)}
+            disabled={!filteredSamples.length}
+            title="Download active registry as Excel (.xlsx)"
           >
             <FileSpreadsheet size={16} style={{ color: '#16a34a' }} />
-            <span>Export All to Excel</span>
+            <span>Export Excel {filteredSamples.length ? `(${filteredSamples.length})` : ''}</span>
           </button>
 
           <button
@@ -127,7 +172,7 @@ export default function CnoListPage() {
       <div className="ar-table-container">
         {/* Search & Filter Bar */}
         <div className="ar-filter-bar">
-          <form onSubmit={handleSearchSubmit} className="ar-search-box">
+          <div className="ar-search-box">
             <Search size={16} className="ar-search-icon" />
             <input
               type="text"
@@ -136,15 +181,16 @@ export default function CnoListPage() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-          </form>
+          </div>
 
           <div className="ar-filter-actions">
-            {/* Filter by Ideal For */}
+            {/* Filter by Ideal For (Gender) */}
             <select
               className="ar-select"
-              style={{ width: 140, height: 38 }}
+              style={{ width: 135, height: 38 }}
               value={idealForFilter}
               onChange={(e) => setIdealForFilter(e.target.value)}
+              title="Filter by Gender"
             >
               <option value="All">All Genders</option>
               <option value="Men">Men</option>
@@ -155,9 +201,10 @@ export default function CnoListPage() {
             {/* Filter by Profile */}
             <select
               className="ar-select"
-              style={{ width: 150, height: 38 }}
+              style={{ width: 145, height: 38 }}
               value={profileFilter}
               onChange={(e) => setProfileFilter(e.target.value)}
+              title="Filter by Olfactory Profile"
             >
               <option value="All">All Profiles</option>
               <option value="French">French</option>
@@ -166,13 +213,62 @@ export default function CnoListPage() {
               <option value="Fresh Aquatic">Fresh Aquatic</option>
               <option value="Woody & Smoky">Woody & Smoky</option>
               <option value="Amber Gourmand">Amber Gourmand</option>
+              <option value="Floral Musky">Floral Musky</option>
+              <option value="Spicy Leather">Spicy Leather</option>
             </select>
 
+            {/* Filter by Date */}
+            <div className="ar-date-filter-box" title="Filter by Sample Date">
+              <Calendar size={14} style={{ color: 'var(--ar-green)', flexShrink: 0 }} />
+              <input
+                type="date"
+                value={dateFilter}
+                onChange={(e) => setDateFilter(e.target.value)}
+                title="Filter by Date"
+              />
+              {dateFilter && (
+                <button
+                  type="button"
+                  className="ar-date-clear-btn"
+                  onClick={() => setDateFilter('')}
+                  title="Clear Date Filter"
+                >
+                  <X size={13} />
+                </button>
+              )}
+            </div>
+
+            {/* Clear All Filters Button */}
+            {isFiltered && (
+              <button
+                type="button"
+                className="ar-btn-secondary"
+                onClick={handleClearFilters}
+                style={{
+                  padding: '7px 11px',
+                  fontSize: 12,
+                  color: '#e11d48',
+                  borderColor: '#fecdd3',
+                  background: '#fff1f2',
+                }}
+                title="Reset all active filters"
+              >
+                <X size={13} />
+                <span>Clear</span>
+              </button>
+            )}
+
+            {/* Filter count indicator */}
+            <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--ar-text-muted)', whiteSpace: 'nowrap' }}>
+              {filteredSamples.length} {filteredSamples.length === 1 ? 'sample' : 'samples'}
+            </span>
+
+            {/* Refresh Button */}
             <button
               type="button"
               className="ar-btn-secondary"
               onClick={loadSamples}
-              title="Refresh Registry"
+              title="Refresh Registry from Atlas"
               style={{ padding: '8px 12px' }}
             >
               <RotateCw size={15} />
@@ -204,29 +300,43 @@ export default function CnoListPage() {
                     Loading samples from MongoDB Atlas...
                   </td>
                 </tr>
-              ) : samples.length === 0 ? (
+              ) : filteredSamples.length === 0 ? (
                 <tr>
                   <td colSpan="10" style={{ textAlign: 'center', padding: '50px 0' }}>
                     <FlaskConical size={36} style={{ color: 'var(--ar-text-sub)', margin: '0 auto 10px', display: 'block' }} />
                     <strong style={{ display: 'block', fontSize: 14, color: 'var(--ar-text-main)' }}>
-                      No CNO Samples Found
+                      {isFiltered ? 'No CNO Samples Match the Active Filters' : 'No CNO Samples Found'}
                     </strong>
                     <p style={{ margin: '4px 0 14px', fontSize: 12.5, color: 'var(--ar-text-muted)' }}>
-                      Register your first supplier fragrance sample using the CNO Form.
+                      {isFiltered
+                        ? 'Try clearing search terms or selecting different gender or date options.'
+                        : 'Register your first supplier fragrance sample using the CNO Form.'}
                     </p>
-                    <button
-                      type="button"
-                      className="ar-btn-primary"
-                      onClick={() => navigate('/ar/cno')}
-                      style={{ margin: '0 auto' }}
-                    >
-                      <Plus size={15} />
-                      <span>Create CNO Sample</span>
-                    </button>
+                    {isFiltered ? (
+                      <button
+                        type="button"
+                        className="ar-btn-secondary"
+                        onClick={handleClearFilters}
+                        style={{ margin: '0 auto' }}
+                      >
+                        <RotateCcw size={14} />
+                        <span>Reset All Filters</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="ar-btn-primary"
+                        onClick={() => navigate('/ar/cno')}
+                        style={{ margin: '0 auto' }}
+                      >
+                        <Plus size={15} />
+                        <span>Create CNO Sample</span>
+                      </button>
+                    )}
                   </td>
                 </tr>
               ) : (
-                samples.map((s) => (
+                filteredSamples.map((s) => (
                   <tr key={s._id || s.id || s.serialNo}>
                     {/* Serial & Code */}
                     <td>
