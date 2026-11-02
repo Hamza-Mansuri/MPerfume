@@ -23,6 +23,9 @@ import {
   getCnoProductSuggestions,
   createCnoSample,
 } from '../../lib/api.js';
+import ArSelect from '../../components/ar/ArSelect.jsx';
+import ArDatePicker from '../../components/ar/ArDatePicker.jsx';
+import IntelligentScentMatcher from '../../components/ar/IntelligentScentMatcher.jsx';
 
 const APPLICATION_OPTIONS = [
   { id: 'Perfume', label: 'Perfume (EDP/EDT)' },
@@ -79,6 +82,19 @@ export default function CnoFormPage() {
   const [loading, setLoading] = useState(false);
   const [successResult, setSuccessResult] = useState(null);
   const [errorMsg, setErrorMsg] = useState('');
+
+  // Mobile split view tab ('form' or 'matcher')
+  const [mobileTab, setMobileTab] = useState('form');
+
+  const handleAdoptInspiration = (name) => {
+    setInspiration(name);
+    setMobileTab('form');
+  };
+
+  const handleApplyUsedInProduct = (name) => {
+    setUsedInProduct(name);
+    setMobileTab('form');
+  };
 
   // Load next serial number on mount
   useEffect(() => {
@@ -298,10 +314,29 @@ export default function CnoFormPage() {
         </div>
       )}
 
+      {/* Mobile Tab Switcher */}
+      <div className="cno-mobile-tab-switcher">
+        <button
+          type="button"
+          className={`cno-mobile-tab-btn ${mobileTab === 'form' ? 'active' : ''}`}
+          onClick={() => setMobileTab('form')}
+        >
+          <span>📝 CNO Form</span>
+        </button>
+        <button
+          type="button"
+          className={`cno-mobile-tab-btn ${mobileTab === 'matcher' ? 'active' : ''}`}
+          onClick={() => setMobileTab('matcher')}
+        >
+          <Sparkles size={14} style={{ color: 'var(--ar-green)' }} />
+          <span>✨ AI Scent Matcher</span>
+        </button>
+      </div>
+
       {/* SPLIT SCREEN GRID: LEFT 50% FORM | RIGHT 50% INTELLIGENT SCENT MATCHING */}
       <div className="cno-split-grid">
         {/* ==================== LEFT COLUMN: CNO FORM (HALF SCREEN) ==================== */}
-        <div className="ar-card">
+        <div className={`ar-card ${mobileTab !== 'form' ? 'cno-col-hidden-mobile' : ''}`}>
           <div className="ar-card-header">
             <h2>
               <span>Sample Details & Formulation Form</span>
@@ -334,19 +369,13 @@ export default function CnoFormPage() {
 
                 {/* Sample Date */}
                 <div className="ar-field">
-                  <label className="ar-label">
-                    <span>Sample Date <span className="req">*</span></span>
-                  </label>
-                  <div className="ar-date-input-wrap">
-                    <Calendar size={15} className="ar-date-icon" />
-                    <input
-                      type="date"
-                      className="ar-input"
-                      value={sampleDate}
-                      onChange={(e) => setSampleDate(e.target.value)}
-                      required
-                    />
-                  </div>
+                  <ArDatePicker
+                    label="Sample Date"
+                    required
+                    title="Select Sample Date"
+                    value={sampleDate}
+                    onChange={(e) => setSampleDate(e.target.value)}
+                  />
                 </div>
               </div>
 
@@ -403,15 +432,17 @@ export default function CnoFormPage() {
                   <label className="ar-label">
                     <span>Ideal For</span>
                   </label>
-                  <select
-                    className="ar-select"
+                  <ArSelect
                     value={idealFor}
                     onChange={(e) => setIdealFor(e.target.value)}
-                  >
-                    <option value="Men">Men</option>
-                    <option value="Women">Women</option>
-                    <option value="Unisex">Unisex</option>
-                  </select>
+                    options={[
+                      { label: 'Men', value: 'Men' },
+                      { label: 'Women', value: 'Women' },
+                      { label: 'Unisex', value: 'Unisex' },
+                    ]}
+                    searchable={false}
+                    width="100%"
+                  />
                 </div>
               </div>
 
@@ -457,10 +488,37 @@ export default function CnoFormPage() {
 
                 {/* Used In Which Product (Interactive Suggestions) */}
                 <div className="ar-field ar-suggestion-container">
-                  <label className="ar-label">
-                    <span>Used In Which Product</span>
-                    <small>Auto-suggests store catalog</small>
-                  </label>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+                    <label className="ar-label" style={{ margin: 0 }}>
+                      <span>Used In Which Product</span>
+                    </label>
+                    {usedInProduct && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMobileTab('matcher');
+                          const el = document.getElementById('ai-scent-matcher-section');
+                          if (el) el.scrollIntoView({ behavior: 'smooth' });
+                        }}
+                        style={{
+                          background: 'rgba(153, 194, 41, 0.15)',
+                          border: '1px solid var(--ar-green)',
+                          color: '#273c09',
+                          borderRadius: 6,
+                          fontSize: 11,
+                          fontWeight: 700,
+                          padding: '2px 8px',
+                          cursor: 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: 4,
+                        }}
+                      >
+                        <Sparkles size={11} />
+                        <span>Match with AI Scent?</span>
+                      </button>
+                    )}
+                  </div>
                   <div style={{ position: 'relative' }}>
                     <input
                       type="text"
@@ -555,18 +613,12 @@ export default function CnoFormPage() {
 
                 {/* Date of Receiving */}
                 <div className="ar-field">
-                  <label className="ar-label">
-                    <span>Date of Receiving</span>
-                  </label>
-                  <div className="ar-date-input-wrap">
-                    <Calendar size={15} className="ar-date-icon" />
-                    <input
-                      type="date"
-                      className="ar-input"
-                      value={receivedDate}
-                      onChange={(e) => setReceivedDate(e.target.value)}
-                    />
-                  </div>
+                  <ArDatePicker
+                    label="Date of Receiving"
+                    title="Select Date of Receiving"
+                    value={receivedDate}
+                    onChange={(e) => setReceivedDate(e.target.value)}
+                  />
                 </div>
               </div>
 
@@ -681,90 +733,16 @@ export default function CnoFormPage() {
         </div>
 
         {/* ==================== RIGHT COLUMN: INTELLIGENT SCENT MATCHING (HALF SCREEN) ==================== */}
-        <div className="ar-matching-panel">
-          {/* Header Banner */}
-          <div className="ar-matching-banner">
-            <span className="ar-matching-badge">
-              <Sparkles size={12} />
-              <span>Pending Phase 2 Module</span>
-            </span>
-            <h3>INTELLIGENT SCENT MATCHING</h3>
-            <p>
-              AI-assisted olfactory formulation studio. Automatically connects incoming supplier sample profiles with Motiwala signature accords and customer trend intelligence.
-            </p>
-          </div>
-
-          {/* Dynamic Sync Preview */}
-          <div className="ar-pyramid-card">
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <strong style={{ fontSize: 13, color: '#0f172a' }}>Live Scent Evaluation Matrix</strong>
-              <span
-                style={{
-                  fontSize: 11,
-                  fontWeight: 700,
-                  color: 'var(--ar-green)',
-                  background: 'var(--ar-green-light)',
-                  padding: '3px 8px',
-                  borderRadius: 6,
-                }}
-              >
-                Synced with CNO Form
-              </span>
-            </div>
-
-            <div className="ar-pyramid-tier">
-              <div>
-                <strong>Active Inspiration:</strong>
-                <p style={{ margin: '2px 0 0', fontSize: 13, fontWeight: 700, color: '#0f172a' }}>
-                  {inspiration || '— (Awaiting input on left)'}
-                </p>
-              </div>
-              <span className="ar-code-badge">{code || 'PENDING'}</span>
-            </div>
-
-            <div className="ar-pyramid-tier">
-              <div>
-                <strong>Olfactory Family & Profile:</strong>
-                <p style={{ margin: '2px 0 0', fontSize: 13, color: '#334155' }}>
-                  {profile} · {idealFor}
-                </p>
-              </div>
-              <span style={{ fontSize: 11, color: '#64748b' }}>
-                Longevity: {concentrateLongevity} (Conc.) / {sprayLongevity} (Spray)
-              </span>
-            </div>
-
-            <div className="ar-pyramid-tier">
-              <div>
-                <strong>Target Applications:</strong>
-                <p style={{ margin: '2px 0 0', fontSize: 12, color: '#334155' }}>
-                  {suitableFor.length ? suitableFor.join(' · ') : 'None selected'}
-                </p>
-              </div>
-              <Layers size={16} style={{ color: 'var(--ar-text-sub)' }} />
-            </div>
-
-            <div className="ar-pyramid-tier">
-              <div>
-                <strong>Linked Store Product:</strong>
-                <p style={{ margin: '2px 0 0', fontSize: 12, fontWeight: 600, color: '#0f172a' }}>
-                  {usedInProduct || 'Direct Accord / Formulation'}
-                </p>
-              </div>
-              <FileCheck size={16} style={{ color: 'var(--ar-green)' }} />
-            </div>
-          </div>
-
-          {/* Reserved Status Box */}
-          <div className="ar-notice-box">
-            <HelpCircle size={18} style={{ flexShrink: 0, marginTop: 1 }} />
-            <div>
-              <strong>Note on Intelligent Scent Matching:</strong>
-              <p style={{ margin: '4px 0 0' }}>
-                This half of the screen is kept reserved for the next phase as requested. When active, it will feature the interactive note pyramid, AI ingredient recommendations, and formulation compatibility scores directly beside your CNO entry form.
-              </p>
-            </div>
-          </div>
+        <div
+          id="ai-scent-matcher-section"
+          className={`cno-right-col ${mobileTab !== 'matcher' ? 'cno-col-hidden-mobile' : ''}`}
+        >
+          <IntelligentScentMatcher
+            onAdoptInspiration={handleAdoptInspiration}
+            onApplyUsedInProduct={handleApplyUsedInProduct}
+            currentUsedInProduct={usedInProduct}
+            currentInspiration={inspiration}
+          />
         </div>
       </div>
     </div>

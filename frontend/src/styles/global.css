@@ -230,3 +230,166 @@ body{background:#fffdfa}
 @media(max-width:950px){.pdp-grid{grid-template-columns:1fr}.pdp-main-image{height:min(65vw,620px)}.pdp-information{padding:0}.pdp-related-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:580px){.pdp-shell{padding-top:18px}.pdp-grid{gap:22px}.pdp-main-image{height:410px}.pdp-information h1{font-size:43px}.pdp-facts{gap:8px}.pdp-order{flex-wrap:wrap}.pdp-disabled-buy{order:3;flex:0 0 100%}.pdp-story{margin-top:45px;padding-top:40px}.pdp-note-pyramid{grid-template-columns:1fr;margin:20px auto}.pdp-related-grid{grid-template-columns:1fr 1fr;gap:8px}.pdp-related-grid .product-image-wrap{height:170px}.pdp-related-grid .product-card-body{padding:10px}.pdp-related-grid .product-card h3{font-size:17px}.pdp-skeleton{grid-template-columns:1fr;gap:10px}.pdp-skeleton-image{height:380px}}
 @media(prefers-reduced-motion:reduce){.pdp-skeleton-image,.pdp-skeleton-info span{animation:none}}
+
+
+/* ==================== MOBILE NAVIGATION DRAWER & GLOBAL RESPONSIVENESS ==================== */
+.mp-mobile-nav-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(14, 12, 9, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 9998;
+  animation: fadeIn 0.2s ease;
+}
+
+.mp-mobile-nav-drawer {
+  position: fixed;
+  top: 0;
+  right: -320px;
+  width: min(320px, 85vw);
+  height: 100vh;
+  background: #fffdf9;
+  z-index: 9999;
+  box-shadow: -8px 0 35px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  transition: right 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-y: auto;
+}
+
+.mp-mobile-nav-drawer.open {
+  right: 0;
+}
+
+.mp-mobile-nav-header {
+  padding: 1.25rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #ebdcd0;
+}
+
+.mp-mobile-nav-links {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.mp-mobile-nav-section-label {
+  font-size: 10.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #8f7f70;
+  margin: 14px 0 6px;
+  padding-left: 6px;
+}
+
+.mp-mobile-nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2e261e;
+  text-decoration: none;
+  background: #fdfaf6;
+  border: 1px solid #f2e9dc;
+  transition: all 0.15s ease;
+}
+
+.mp-mobile-nav-item:hover {
+  background: #f7eee1;
+  color: #17120c;
+}
+
+.mp-mobile-ar-card {
+  background: linear-gradient(135deg, #f6fae8, #edf6d6);
+  border: 1.5px solid rgba(153, 194, 41, 0.45);
+  border-radius: 14px;
+  padding: 12px;
+  margin: 4px 0;
+}
+
+.mp-mobile-ar-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.mp-mobile-ar-header strong {
+  display: block;
+  font-size: 13px;
+  color: #273c09;
+}
+
+.mp-mobile-ar-header small {
+  font-size: 10.5px;
+  color: #55771d;
+  font-weight: 600;
+}
+
+.mp-mobile-ar-links {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.mp-mobile-ar-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: #ffffff;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #3f6212;
+  text-decoration: none;
+  border: 1px solid rgba(153, 194, 41, 0.25);
+  transition: all 0.15s ease;
+}
+
+.mp-mobile-ar-item:hover {
+  background: #f3f9e0;
+}
+
+.mp-mobile-nav-footer {
+  padding: 1.25rem;
+  border-top: 1px solid #ebdcd0;
+  text-align: center;
+  font-size: 11px;
+  color: #9c8e80;
+  background: #faf6f0;
+}
+
+/* Mobile Header Action Icons */
+@media (max-width: 480px) {
+  .header {
+    height: 64px !important;
+  }
+  .header-actions {
+    gap: 5px !important;
+  }
+  .icon-button {
+    width: 34px !important;
+    height: 34px !important;
+  }
+  .icon-button svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+  .brand-mark {
+    width: 34px !important;
+    height: 34px !important;
+    font-size: 13px !important;
+  }
+  .brand-copy strong {
+    font-size: 13px !important;
+  }
+}

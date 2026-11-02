@@ -11,6 +11,7 @@ const AdminPage = lazy(() => import('./pages/AdminPage.jsx'));
 const ArLayout = lazy(() => import('./layouts/ArLayout.jsx'));
 const CnoFormPage = lazy(() => import('./pages/ar/CnoFormPage.jsx'));
 const CnoListPage = lazy(() => import('./pages/ar/CnoListPage.jsx'));
+const ArProductsPage = lazy(() => import('./pages/ar/ArProductsPage.jsx'));
 
 export default function App() {
   return (
@@ -45,6 +46,8 @@ export default function App() {
           <Route index element={<Navigate to="/ar/cno" replace />} />
           <Route path="cno" element={<CnoFormPage />} />
           <Route path="cno-list" element={<CnoListPage />} />
+          <Route path="products" element={<ArProductsPage />} />
+          <Route path="store-products" element={<Navigate to="/ar/products" replace />} />
         </Route>
 
         {/* Fallback to Home */}

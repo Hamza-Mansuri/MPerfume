@@ -10,6 +10,7 @@ import {
   Menu,
   X,
   FileSpreadsheet,
+  Boxes,
 } from 'lucide-react';
 import '../styles/ar-theme.css';
 
@@ -20,7 +21,15 @@ export default function ArLayout() {
   const getBreadcrumb = () => {
     if (location.pathname.includes('/cno-list')) return 'CNO Sample Registry & Reports';
     if (location.pathname.includes('/cno')) return 'Chief Nose Officer (CNO) Form';
+    if (location.pathname.includes('/products')) return 'Store Products Registry';
     return 'Admin Rights Business Portal';
+  };
+
+  const getBreadcrumbShort = () => {
+    if (location.pathname.includes('/cno-list')) return 'CNO Registry';
+    if (location.pathname.includes('/cno')) return 'CNO Form';
+    if (location.pathname.includes('/products')) return 'Products';
+    return 'AR Portal';
   };
 
   return (
@@ -78,14 +87,14 @@ export default function ArLayout() {
 
           <div className="ar-nav-section-title">System & Management</div>
 
-          <Link
-            to="/admin"
-            className="ar-nav-item"
+          <NavLink
+            to="/ar/products"
+            className={({ isActive }) => `ar-nav-item ${isActive ? 'active' : ''}`}
             onClick={() => setMobileOpen(false)}
           >
-            <FileSpreadsheet size={18} />
+            <Boxes size={18} />
             <span>Store Products</span>
-          </Link>
+          </NavLink>
         </nav>
 
         <div className="ar-sidebar-footer">
@@ -100,7 +109,7 @@ export default function ArLayout() {
       <div className="ar-main">
         {/* Topbar */}
         <header className="ar-topbar">
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div className="ar-topbar-left">
             <button
               className="ar-icon-action mobile-only"
               onClick={() => setMobileOpen(!mobileOpen)}
@@ -109,25 +118,26 @@ export default function ArLayout() {
               <Menu size={18} />
             </button>
             <div className="ar-breadcrumbs">
-              <span>AR Portal</span>
-              <span>/</span>
-              <strong>{getBreadcrumb()}</strong>
+              <span className="ar-breadcrumb-root">AR Portal</span>
+              <span className="ar-breadcrumb-sep">/</span>
+              <strong className="ar-breadcrumb-full">{getBreadcrumb()}</strong>
+              <strong className="ar-breadcrumb-mobile">{getBreadcrumbShort()}</strong>
             </div>
           </div>
 
           <div className="ar-topbar-actions">
             <div className="ar-status-badge" title="Live Cluster: Mperfume">
               <span className="ar-status-dot" />
-              <span>Atlas Live · Mperfume</span>
+              <span className="ar-status-full">Atlas Live · Mperfume</span>
+              <span className="ar-status-mobile">Atlas Live</span>
             </div>
             <Link
               to="/shop"
-              className="ar-btn-secondary"
-              style={{ fontSize: 12, padding: '6px 12px' }}
+              className="ar-btn-secondary ar-view-store-btn"
               target="_blank"
               rel="noreferrer"
             >
-              <span>View Store</span>
+              <span className="ar-store-text">View Store</span>
               <ExternalLink size={13} />
             </Link>
           </div>

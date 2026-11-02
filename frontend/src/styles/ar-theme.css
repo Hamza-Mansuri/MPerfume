@@ -188,6 +188,15 @@
   position: sticky;
   top: 0;
   z-index: 40;
+  gap: 12px;
+}
+
+.ar-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
 }
 
 .ar-breadcrumbs {
@@ -196,16 +205,37 @@
   gap: 8px;
   font-size: 13px;
   color: var(--ar-text-muted);
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
-.ar-breadcrumbs strong {
+.ar-breadcrumb-root {
+  color: var(--ar-text-muted);
+  font-weight: 500;
+}
+
+.ar-breadcrumb-sep {
+  color: #cbd5e1;
+}
+
+.ar-breadcrumb-full {
   color: var(--ar-text-main);
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ar-breadcrumb-mobile {
+  display: none;
 }
 
 .ar-topbar-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  flex-shrink: 0;
 }
 
 .ar-status-badge {
@@ -219,6 +249,12 @@
   font-size: 11.5px;
   font-weight: 700;
   border: 1px solid rgba(153, 194, 41, 0.3);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.ar-status-mobile {
+  display: none;
 }
 
 .ar-status-dot {
@@ -227,6 +263,17 @@
   border-radius: 50%;
   background: var(--ar-green);
   box-shadow: 0 0 0 2px rgba(153, 194, 41, 0.4);
+  flex-shrink: 0;
+}
+
+.ar-view-store-btn {
+  font-size: 12px;
+  padding: 6px 12px;
+  flex-shrink: 0;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 /* Body Content Area */
@@ -1008,28 +1055,267 @@ input[type='time']::-webkit-calendar-picker-indicator:hover {
   box-shadow: 0 5px 12px rgba(153, 194, 41, 0.45);
 }
 
+/* Mobile Tab Switcher for CNO Split Grid */
+.cno-mobile-tab-switcher {
+  display: none;
+  background: #f1f5f9;
+  border-radius: 10px;
+  padding: 4px;
+  margin-bottom: 1.25rem;
+  gap: 6px;
+}
+
+.cno-mobile-tab-btn {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  transition: all 0.15s ease;
+}
+
+.cno-mobile-tab-btn.active {
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
+  .cno-mobile-tab-switcher {
+    display: flex;
+  }
   .cno-split-grid {
     grid-template-columns: 1fr;
+    gap: 1.25rem;
   }
   .ar-matching-panel {
-    position: static;
+    position: static !important;
+  }
+  .cno-col-hidden-mobile {
+    display: none !important;
   }
 }
 
 @media (max-width: 768px) {
   .ar-sidebar {
     position: fixed;
-    left: -260px;
+    left: -270px;
+    top: 0;
+    bottom: 0;
+    z-index: 50;
+    transition: left 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   }
   .ar-sidebar.open {
     left: 0;
+  }
+  .ar-topbar {
+    height: 56px;
+    padding: 0 0.85rem;
+    gap: 8px;
+  }
+  .ar-breadcrumb-root,
+  .ar-breadcrumb-sep,
+  .ar-breadcrumb-full {
+    display: none !important;
+  }
+  .ar-breadcrumb-mobile {
+    display: block !important;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ar-text-main);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .ar-status-full {
+    display: none !important;
+  }
+  .ar-status-mobile {
+    display: inline !important;
+  }
+  .ar-status-badge {
+    padding: 4px 8px;
+    font-size: 11px;
+    gap: 5px;
+  }
+  .ar-content {
+    padding: 0.85rem;
+  }
+  .ar-page-header {
+    margin-bottom: 0.85rem;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .ar-page-header > div:last-child {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .ar-page-header button,
+  .ar-page-header a {
+    width: 100%;
+    justify-content: center;
+  }
+  .ar-page-header h1 {
+    font-size: 18px;
+  }
+  .ar-card-header {
+    padding: 0.85rem 1rem;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .ar-card-header h2 {
+    font-size: 15px;
+  }
+  .ar-card-body {
+    padding: 0.85rem;
   }
   .ar-grid-2,
   .ar-grid-3,
   .ar-checkbox-grid {
     grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .ar-filter-bar {
+    padding: 0.85rem;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .ar-filter-actions {
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 8px;
+  }
+  .ar-filter-actions > * {
+    flex: 1 1 auto;
+    min-width: 120px;
+  }
+  .ar-table {
+    min-width: 860px;
+  }
+  .ar-table th,
+  .ar-table td {
+    padding: 10px 12px;
+  }
+}
+
+.ar-page-mobile-indicator {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .ar-pagination-container {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 10px !important;
+  }
+  .ar-pagination-info {
+    text-align: center !important;
+    font-size: 12px !important;
+  }
+  .ar-pagination-actions {
+    justify-content: center !important;
+    width: 100% !important;
+  }
+  .ar-modal-backdrop {
+    padding: 0.65rem !important;
+  }
+  .ar-modal-header {
+    padding: 1rem !important;
+  }
+  .ar-modal-body {
+    padding: 1rem !important;
+  }
+  .ar-modal-footer {
+    padding: 0.85rem 1rem !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    align-items: stretch !important;
+  }
+  .ar-modal-footer > div {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  .ar-modal-footer button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+  .ar-datepicker-modal-body {
+    flex-direction: column !important;
+    max-height: 80vh !important;
+    overflow-y: auto !important;
+  }
+  .ar-datepicker-presets {
+    width: 100% !important;
+    min-width: 100% !important;
+    border-right: none !important;
+    border-bottom: 1px solid #eef2f6 !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    padding: 8px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .ar-page-numbers {
+    display: none !important;
+  }
+  .ar-page-mobile-indicator {
+    display: inline-block !important;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #475569;
+    padding: 0 10px;
+  }
+  .ar-topbar {
+    padding: 0 0.5rem;
+    gap: 6px;
+  }
+  .ar-topbar-left {
+    gap: 6px;
+  }
+  .ar-breadcrumb-mobile {
+    font-size: 13px;
+  }
+  .ar-status-badge {
+    padding: 4px 6px;
+    font-size: 10px;
+    gap: 4px;
+  }
+  .ar-view-store-btn {
+    padding: 5px 8px;
+  }
+  .ar-view-store-btn .ar-store-text {
+    display: none;
+  }
+  .cno-mobile-tab-switcher {
+    padding: 3px;
+    gap: 4px;
+  }
+  .cno-mobile-tab-btn {
+    padding: 8px 6px;
+    font-size: 12px;
+  }
+  .ar-modal-card {
+    max-width: 95vw !important;
+    padding: 14px !important;
   }
 }
 

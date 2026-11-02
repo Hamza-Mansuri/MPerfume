@@ -20,8 +20,12 @@ import {
   Tag,
   CheckCircle,
 } from 'lucide-react';
+import { startOfDay, endOfDay } from 'date-fns';
 import { getCnoSamples, deleteCnoSample } from '../../lib/api.js';
 import { exportCnoToExcel, exportSingleCnoPdf } from '../../utils/cnoExport.js';
+import ArSelect from '../../components/ar/ArSelect.jsx';
+import ArDateRangePicker from '../../components/ar/ArDateRangePicker.jsx';
+import ArPagination from '../../components/ar/ArPagination.jsx';
 
 export default function CnoListPage() {
   const navigate = useNavigate();
@@ -31,7 +35,11 @@ export default function CnoListPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [idealForFilter, setIdealForFilter] = useState('All');
   const [profileFilter, setProfileFilter] = useState('All');
-  const [dateFilter, setDateFilter] = useState('');
+  const [dateRange, setDateRange] = useState(null); // [start, end]
+
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   // Selected sample for view modal
   const [activeModalSample, setActiveModalSample] = useState(null);
@@ -69,11 +77,21 @@ export default function CnoListPage() {
         if (!itemProfile.includes(targetProfile)) return false;
       }
 
-      // 3. Date Filter (matches sampleDate or receivedDate YYYY-MM-DD)
-      if (dateFilter) {
-        const sDate = s.sampleDate ? s.sampleDate.slice(0, 10) : '';
-        const rDate = s.receivedDate ? s.receivedDate.slice(0, 10) : '';
-        if (sDate !== dateFilter && rDate !== dateFilter) return false;
+      // 3. Date Range Filter
+      if (dateRange && (dateRange[0] || dateRange[1])) {
+        const start = startOfDay(dateRange[0] || dateRange[1]);
+        const end = endOfDay(dateRange[1] || dateRange[0] || start);
+
+        let match = false;
+        if (s.sampleDate) {
+          const sd = new Date(s.sampleDate);
+          if (!isNaN(sd) && sd >= start && sd <= end) match = true;
+        }
+        if (!match && s.receivedDate) {
+          const rd = new Date(s.receivedDate);
+          if (!isNaN(rd) && rd >= start && rd <= end) match = true;
+        }
+        if (!match) return false;
       }
 
       // 4. Search query
@@ -93,16 +111,47 @@ export default function CnoListPage() {
 
       return true;
     });
-  }, [samples, searchTerm, idealForFilter, profileFilter, dateFilter]);
+  }, [samples, searchTerm, idealForFilter, profileFilter, dateRange]);
 
-  const isFiltered = searchTerm.trim() !== '' || idealForFilter !== 'All' || profileFilter !== 'All' || dateFilter !== '';
+  const isFiltered =
+    searchTerm.trim() !== '' ||
+    idealForFilter !== 'All' ||
+    profileFilter !== 'All' ||
+    Boolean(dateRange);
+
+  const handleSearchChange = (val) => {
+    setSearchTerm(val);
+    setCurrentPage(1);
+  };
+
+  const handleGenderChange = (val) => {
+    setIdealForFilter(val);
+    setCurrentPage(1);
+  };
+
+  const handleProfileChange = (val) => {
+    setProfileFilter(val);
+    setCurrentPage(1);
+  };
+
+  const handleDateRangeChange = (range) => {
+    setDateRange(range);
+    setCurrentPage(1);
+  };
 
   const handleClearFilters = () => {
     setSearchTerm('');
     setIdealForFilter('All');
     setProfileFilter('All');
-    setDateFilter('');
+    setDateRange(null);
+    setCurrentPage(1);
   };
+
+  // Pagination Slice
+  const paginatedSamples = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredSamples.slice(start, start + pageSize);
+  }, [filteredSamples, currentPage, pageSize]);
 
   const handleDelete = async (id, serial) => {
     if (!window.confirm(`Are you sure you want to remove sample ${serial}?`)) return;
@@ -172,71 +221,82 @@ export default function CnoListPage() {
       <div className="ar-table-container">
         {/* Search & Filter Bar */}
         <div className="ar-filter-bar">
-          <div className="ar-search-box">
-            <Search size={16} className="ar-search-icon" />
-            <input
-              type="text"
-              className="ar-input"
-              placeholder="Search serial, code, supplier, inspiration..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, minWidth: 260 }}>
+            <div className="ar-search-box" style={{ flex: 1 }}>
+              <Search size={16} className="ar-search-icon" />
+              <input
+                type="text"
+                className="ar-input"
+                placeholder="Search serial, code, supplier, inspiration..."
+                value={searchTerm}
+                onChange={(e) => handleSearchChange(e.target.value)}
+              />
+            </div>
+
+            {/* Rows selector shifted beside search filter */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+              <span style={{ fontSize: '12.5px', fontWeight: 600, color: '#64748b', whiteSpace: 'nowrap' }}>
+                Rows:
+              </span>
+              <ArSelect
+                value={String(pageSize)}
+                onChange={(e) => {
+                  setPageSize(Number(e.target.value));
+                  setCurrentPage(1);
+                }}
+                options={[
+                  { label: '5', value: '5' },
+                  { label: '10', value: '10' },
+                  { label: '25', value: '25' },
+                  { label: '50', value: '50' },
+                ]}
+                width={70}
+                minWidth={70}
+                searchable={false}
+              />
+            </div>
           </div>
 
           <div className="ar-filter-actions">
-            {/* Filter by Ideal For (Gender) */}
-            <select
-              className="ar-select"
-              style={{ width: 135, height: 38 }}
+            {/* Filter by Ideal For (Gender) with ArSelect (Image 1 replica) */}
+            <ArSelect
               value={idealForFilter}
-              onChange={(e) => setIdealForFilter(e.target.value)}
-              title="Filter by Gender"
-            >
-              <option value="All">All Genders</option>
-              <option value="Men">Men</option>
-              <option value="Women">Women</option>
-              <option value="Unisex">Unisex</option>
-            </select>
+              onChange={(e) => handleGenderChange(e.target.value)}
+              options={[
+                { label: 'All Genders', value: 'All' },
+                { label: 'Men', value: 'Men' },
+                { label: 'Women', value: 'Women' },
+                { label: 'Unisex', value: 'Unisex' },
+              ]}
+              width={140}
+              searchable={false}
+            />
 
-            {/* Filter by Profile */}
-            <select
-              className="ar-select"
-              style={{ width: 145, height: 38 }}
+            {/* Filter by Profile with ArSelect (Image 1 replica) */}
+            <ArSelect
               value={profileFilter}
-              onChange={(e) => setProfileFilter(e.target.value)}
-              title="Filter by Olfactory Profile"
-            >
-              <option value="All">All Profiles</option>
-              <option value="French">French</option>
-              <option value="Oriental">Oriental</option>
-              <option value="Arabic / Khaliji">Arabic / Khaliji</option>
-              <option value="Fresh Aquatic">Fresh Aquatic</option>
-              <option value="Woody & Smoky">Woody & Smoky</option>
-              <option value="Amber Gourmand">Amber Gourmand</option>
-              <option value="Floral Musky">Floral Musky</option>
-              <option value="Spicy Leather">Spicy Leather</option>
-            </select>
+              onChange={(e) => handleProfileChange(e.target.value)}
+              options={[
+                { label: 'All Profiles', value: 'All' },
+                { label: 'French', value: 'French' },
+                { label: 'Oriental', value: 'Oriental' },
+                { label: 'Arabic / Khaliji', value: 'Arabic / Khaliji' },
+                { label: 'Fresh Aquatic', value: 'Fresh Aquatic' },
+                { label: 'Woody & Smoky', value: 'Woody & Smoky' },
+                { label: 'Amber Gourmand', value: 'Amber Gourmand' },
+                { label: 'Floral Musky', value: 'Floral Musky' },
+                { label: 'Spicy Leather', value: 'Spicy Leather' },
+              ]}
+              width={160}
+              searchable={true}
+            />
 
-            {/* Filter by Date */}
-            <div className="ar-date-filter-box" title="Filter by Sample Date">
-              <Calendar size={14} style={{ color: 'var(--ar-green)', flexShrink: 0 }} />
-              <input
-                type="date"
-                value={dateFilter}
-                onChange={(e) => setDateFilter(e.target.value)}
-                title="Filter by Date"
-              />
-              {dateFilter && (
-                <button
-                  type="button"
-                  className="ar-date-clear-btn"
-                  onClick={() => setDateFilter('')}
-                  title="Clear Date Filter"
-                >
-                  <X size={13} />
-                </button>
-              )}
-            </div>
+            {/* Filter by Date Range (Image 2 replica) */}
+            <ArDateRangePicker
+              value={dateRange}
+              onChange={handleDateRangeChange}
+              placeholder="Filter by Date Range"
+            />
 
             {/* Clear All Filters Button */}
             {isFiltered && (
@@ -277,7 +337,7 @@ export default function CnoListPage() {
         </div>
 
         {/* Responsive Table */}
-        <div style={{ overflowX: 'auto' }}>
+        <div className="table-responsive" style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', width: '100%' }}>
           <table className="ar-table">
             <thead>
               <tr>
@@ -300,7 +360,7 @@ export default function CnoListPage() {
                     Loading samples from MongoDB Atlas...
                   </td>
                 </tr>
-              ) : filteredSamples.length === 0 ? (
+              ) : paginatedSamples.length === 0 ? (
                 <tr>
                   <td colSpan="10" style={{ textAlign: 'center', padding: '50px 0' }}>
                     <FlaskConical size={36} style={{ color: 'var(--ar-text-sub)', margin: '0 auto 10px', display: 'block' }} />
@@ -336,7 +396,7 @@ export default function CnoListPage() {
                   </td>
                 </tr>
               ) : (
-                filteredSamples.map((s) => (
+                paginatedSamples.map((s) => (
                   <tr key={s._id || s.id || s.serialNo}>
                     {/* Serial & Code */}
                     <td>
@@ -476,6 +536,15 @@ export default function CnoListPage() {
             </tbody>
           </table>
         </div>
+
+        {/* Enterprise Pagination */}
+        <ArPagination
+          currentPage={currentPage}
+          totalItems={filteredSamples.length}
+          pageSize={pageSize}
+          onPageChange={setCurrentPage}
+          showRowsSelector={false}
+        />
       </div>
 
       {/* ==================== ACTION MODAL: VIEW FULL INFORMATION ==================== */}
