@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 
 const HomePage = lazy(() => import('./pages/HomePage.jsx'));
 const ShopPage = lazy(() => import('./pages/ShopPage.jsx'));
+const AiDiscoveryPage = lazy(() => import('./pages/AiDiscoveryPage.jsx'));
 const ProductPage = lazy(() => import('./pages/ProductPage.jsx'));
 const LoginPage = lazy(() => import('./pages/LoginPage.jsx'));
 const AdminPage = lazy(() => import('./pages/AdminPage.jsx'));
@@ -37,6 +38,9 @@ export default function App() {
         {/* Public Storefront Routes */}
         <Route path="/" element={<HomePage />} />
         <Route path="/shop" element={<ShopPage />} />
+        <Route path="/ai-discovery" element={<AiDiscoveryPage />} />
+        <Route path="/discover" element={<Navigate to="/ai-discovery" replace />} />
+        <Route path="/finder" element={<Navigate to="/ai-discovery" replace />} />
         <Route path="/product/:slug" element={<ProductPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/admin" element={<AdminPage />} />

@@ -1,6 +1,6 @@
 import { demoProducts } from '../data/products.js';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' ? '/api' : 'http://localhost:5000/api');
 
 export async function searchProducts(query) {
   if (!query?.trim()) return demoProducts;
@@ -142,19 +142,32 @@ export async function createCnoSample(sampleData) {
 export async function getCnoSamples(params = {}) {
   const queryParams = new URLSearchParams();
   if (params.q) queryParams.set('q', params.q);
-  if (params.idealFor) queryParams.set('idealFor', params.idealFor);
-  if (params.profile) queryParams.set('profile', params.profile);
+  if (params.idealFor && params.idealFor !== 'All') queryParams.set('idealFor', params.idealFor);
+  if (params.profile && params.profile !== 'All') queryParams.set('profile', params.profile);
   if (params.supplier) queryParams.set('supplier', params.supplier);
-  if (params.status) queryParams.set('status', params.status);
+  if (params.status && params.status !== 'All') queryParams.set('status', params.status);
   if (params.page) queryParams.set('page', params.page);
   if (params.limit) queryParams.set('limit', params.limit);
 
+  const qs = queryParams.toString();
+  const url = `${API_URL}/cno${qs ? `?${qs}` : ''}`;
+
   try {
-    const res = await fetch(`${API_URL}/cno?${queryParams.toString()}`);
-    if (!res.ok) throw new Error('API unavailable');
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`API error ${res.status}`);
     const data = await res.json();
     return data;
-  } catch {
+  } catch (err) {
+    console.warn('Primary /api fetch attempt failed, trying direct localhost:5000 fallback:', err.message);
+    try {
+      const fallbackUrl = `http://localhost:5000/api/cno${qs ? `?${qs}` : ''}`;
+      const resFallback = await fetch(fallbackUrl);
+      if (resFallback.ok) {
+        return await resFallback.json();
+      }
+    } catch (e2) {
+      console.warn('Direct localhost fallback also unavailable:', e2.message);
+    }
     const local = JSON.parse(localStorage.getItem('mp_cno_samples') || '[]');
     let filtered = [...local];
     if (params.q) {

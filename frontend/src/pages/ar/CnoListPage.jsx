@@ -19,6 +19,9 @@ import {
   Clock,
   Tag,
   CheckCircle,
+  Sparkles,
+  Printer,
+  Download,
 } from 'lucide-react';
 import { startOfDay, endOfDay } from 'date-fns';
 import { getCnoSamples, deleteCnoSample } from '../../lib/api.js';
@@ -51,7 +54,7 @@ export default function CnoListPage() {
   async function loadSamples() {
     setLoading(true);
     try {
-      const res = await getCnoSamples({});
+      const res = await getCnoSamples({ limit: 100 });
       setSamples(res.samples || []);
     } catch (e) {
       console.error('Error loading samples:', e);
@@ -180,6 +183,19 @@ export default function CnoListPage() {
     }
   };
 
+  // KPI Statistics Calculation
+  const stats = useMemo(() => {
+    const total = samples.length;
+    const inspired = samples.filter((s) => s.inspiration && s.inspiration.trim()).length;
+    const beastMode = samples.filter((s) => {
+      const spray = String(s.sprayLongevity || '');
+      const conc = String(s.concentrateLongevity || '');
+      return spray.includes('12') || spray.includes('24') || conc.includes('12') || conc.includes('24') || spray.includes('8') || conc.includes('8');
+    }).length;
+    const suppliers = new Set(samples.map((s) => (s.supplierName || '').trim()).filter(Boolean)).size;
+    return { total, inspired, beastMode, suppliers };
+  }, [samples]);
+
   return (
     <div>
       {/* Header */}
@@ -214,6 +230,53 @@ export default function CnoListPage() {
             <Plus size={16} />
             <span>New CNO Sample</span>
           </button>
+        </div>
+      </div>
+
+      {/* KPI METRIC CARDS */}
+      <div className="ar-kpi-grid">
+        <div className="ar-kpi-card">
+          <div className="ar-kpi-icon">
+            <FlaskConical size={22} />
+          </div>
+          <div className="ar-kpi-content">
+            <span className="ar-kpi-label">Total Formulations</span>
+            <span className="ar-kpi-value">{stats.total}</span>
+            <span className="ar-kpi-sub">Verified Laboratory Entries</span>
+          </div>
+        </div>
+
+        <div className="ar-kpi-card gold">
+          <div className="ar-kpi-icon">
+            <Sparkles size={22} />
+          </div>
+          <div className="ar-kpi-content">
+            <span className="ar-kpi-label">Benchmark Accords</span>
+            <span className="ar-kpi-value">{stats.inspired}</span>
+            <span className="ar-kpi-sub">Global Icons Matched</span>
+          </div>
+        </div>
+
+        <div className="ar-kpi-card amber">
+          <div className="ar-kpi-icon">
+            <Clock size={22} />
+          </div>
+          <div className="ar-kpi-content">
+            <span className="ar-kpi-label">All-Day Longevity</span>
+            <span className="ar-kpi-value">{stats.beastMode}</span>
+            <span className="ar-kpi-sub">8h+ & 12h+ Sillage Endurance</span>
+          </div>
+        </div>
+
+        <div className="ar-kpi-card emerald">
+          <div className="ar-kpi-icon">
+            <Tag size={22} />
+          </div>
+          <div className="ar-kpi-content">
+            <span className="ar-kpi-label">Master Suppliers</span>
+            <span className="ar-kpi-value">{stats.suppliers}</span>
+            <span className="ar-kpi-sub">International Fragrance Houses</span>
+          </div>
         </div>
       </div>
 

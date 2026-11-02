@@ -198,6 +198,28 @@ export default function IntelligentScentMatcher({
       .slice(0, 8);
   }, [allUserNotes]);
 
+  // Dynamic Olfactory Accord Profile Breakdown
+  const accordBreakdown = useMemo(() => {
+    let fresh = 0, floral = 0, woody = 0, amber = 0, spicy = 0;
+    allUserNotes.forEach((note) => {
+      const n = note.toLowerCase();
+      if (/bergamot|lemon|grapefruit|mint|citrus|orange|lime/.test(n)) fresh += 2;
+      else if (/rose|jasmine|lavender|iris|geranium|floral|violet/.test(n)) floral += 2;
+      else if (/oud|sandalwood|cedarwood|patchouli|wood|vetiver|birch/.test(n)) woody += 2;
+      else if (/amber|vanilla|musk|leather|tonka|ambergris/.test(n)) amber += 2;
+      else if (/cardamom|nutmeg|cinnamon|saffron|pepper|clove|spice/.test(n)) spicy += 2;
+      else fresh += 1;
+    });
+    const sum = fresh + floral + woody + amber + spicy || 1;
+    return {
+      fresh: Math.round((fresh / sum) * 100),
+      floral: Math.round((floral / sum) * 100),
+      woody: Math.round((woody / sum) * 100),
+      amber: Math.round((amber / sum) * 100),
+      spicy: Math.round((spicy / sum) * 100),
+    };
+  }, [allUserNotes]);
+
   return (
     <div className="ar-matching-panel" style={{ position: 'sticky', top: '84px' }}>
       {/* Header Banner */}
@@ -546,6 +568,45 @@ export default function IntelligentScentMatcher({
               }}
             />
           </div>
+        </div>
+      </div>
+
+      {/* LIVE OLFACTORY ACCORD COMPOSITION */}
+      <div
+        style={{
+          background: '#ffffff',
+          border: '1px solid var(--ar-border)',
+          borderRadius: 12,
+          padding: '12px 14px',
+          boxShadow: 'var(--ar-shadow)',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+          <span style={{ fontSize: 11.5, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--ar-text-muted)', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Sparkles size={13} style={{ color: 'var(--ar-gold)' }} />
+            <span>Accord Harmony Profile</span>
+          </span>
+          <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--ar-green-dark)', background: 'var(--ar-green-light)', padding: '2px 8px', borderRadius: 999 }}>
+            Balanced Sillage
+          </span>
+        </div>
+
+        {/* Multi-segment progress bar */}
+        <div style={{ height: 8, borderRadius: 999, background: '#f1f5f9', overflow: 'hidden', display: 'flex' }}>
+          <div style={{ width: `${accordBreakdown.fresh}%`, background: '#10b981', transition: 'width 0.3s ease' }} title={`Fresh: ${accordBreakdown.fresh}%`} />
+          <div style={{ width: `${accordBreakdown.floral}%`, background: '#ec4899', transition: 'width 0.3s ease' }} title={`Floral: ${accordBreakdown.floral}%`} />
+          <div style={{ width: `${accordBreakdown.woody}%`, background: '#854d0e', transition: 'width 0.3s ease' }} title={`Woody: ${accordBreakdown.woody}%`} />
+          <div style={{ width: `${accordBreakdown.amber}%`, background: '#d97706', transition: 'width 0.3s ease' }} title={`Amber: ${accordBreakdown.amber}%`} />
+          <div style={{ width: `${accordBreakdown.spicy}%`, background: '#ef4444', transition: 'width 0.3s ease' }} title={`Spicy: ${accordBreakdown.spicy}%`} />
+        </div>
+
+        {/* Accord percentages legend */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 6, marginTop: 8, fontSize: 11 }}>
+          <span style={{ color: '#059669', fontWeight: 600 }}>🌿 Fresh {accordBreakdown.fresh}%</span>
+          <span style={{ color: '#db2777', fontWeight: 600 }}>🌸 Floral {accordBreakdown.floral}%</span>
+          <span style={{ color: '#78350f', fontWeight: 600 }}>🪵 Woody {accordBreakdown.woody}%</span>
+          <span style={{ color: '#b45309', fontWeight: 600 }}>✨ Amber {accordBreakdown.amber}%</span>
+          <span style={{ color: '#dc2626', fontWeight: 600 }}>🌶️ Spicy {accordBreakdown.spicy}%</span>
         </div>
       </div>
 

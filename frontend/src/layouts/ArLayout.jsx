@@ -50,7 +50,7 @@ export default function ArLayout() {
             <div className="ar-brand-mark">MP</div>
             <div className="ar-brand-titles">
               <strong>Motiwala</strong>
-              <small>Admin Rights · AR</small>
+              <small>Haute Parfumerie · AR</small>
             </div>
           </Link>
           <button
@@ -64,7 +64,7 @@ export default function ArLayout() {
         </div>
 
         <nav className="ar-sidebar-nav">
-          <div className="ar-nav-section-title">Fragrance Formulation & CNO</div>
+          <div className="ar-nav-section-title">Olfactory Studio & CNO</div>
 
           <NavLink
             to="/ar/cno"
@@ -73,7 +73,7 @@ export default function ArLayout() {
             onClick={() => setMobileOpen(false)}
           >
             <FlaskConical size={18} />
-            <span>CNO</span>
+            <span>CNO Formulation Studio</span>
           </NavLink>
 
           <NavLink
@@ -82,10 +82,10 @@ export default function ArLayout() {
             onClick={() => setMobileOpen(false)}
           >
             <ListFilter size={18} />
-            <span>CNO List</span>
+            <span>CNO Registry & Dossiers</span>
           </NavLink>
 
-          <div className="ar-nav-section-title">System & Management</div>
+          <div className="ar-nav-section-title">Treasury & Inventory</div>
 
           <NavLink
             to="/ar/products"
@@ -93,7 +93,7 @@ export default function ArLayout() {
             onClick={() => setMobileOpen(false)}
           >
             <Boxes size={18} />
-            <span>Store Products</span>
+            <span>Store Catalog Inventory</span>
           </NavLink>
         </nav>
 

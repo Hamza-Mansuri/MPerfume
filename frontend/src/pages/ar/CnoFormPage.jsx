@@ -414,10 +414,12 @@ export default function CnoFormPage() {
               <div className="ar-grid-2">
                 {/* Inspiration */}
                 <div className="ar-field">
-                  <label className="ar-label">
-                    <span>Inspiration</span>
-                    <small>e.g. Bleu de Chanel</small>
-                  </label>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+                    <label className="ar-label" style={{ margin: 0 }}>
+                      <span>Inspiration</span>
+                      <small>Benchmark perfume</small>
+                    </label>
+                  </div>
                   <input
                     type="text"
                     className="ar-input"
@@ -425,6 +427,25 @@ export default function CnoFormPage() {
                     onChange={(e) => setInspiration(e.target.value)}
                     placeholder="e.g. Bleu de Chanel, Baccarat 540"
                   />
+                  <div className="ar-sensory-chips" style={{ marginTop: 6 }}>
+                    {['Bleu de Chanel', 'Baccarat Rouge 540', 'Creed Aventus', 'Oud Wood', 'Delina', 'Santal 33'].map((item) => (
+                      <button
+                        key={item}
+                        type="button"
+                        className="ar-sensory-chip"
+                        onClick={() => setInspiration(item)}
+                        style={{
+                          fontSize: 10.5,
+                          padding: '2px 8px',
+                          background: inspiration === item ? 'var(--ar-gold-light)' : '#fdfbf7',
+                          borderColor: inspiration === item ? 'var(--ar-gold)' : 'var(--ar-border)',
+                          color: inspiration === item ? '#8c6f3d' : '#64748b',
+                        }}
+                      >
+                        ✦ {item}
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Ideal For */}
@@ -670,8 +691,8 @@ export default function CnoFormPage() {
 
               <div className="ar-field">
                 <label className="ar-label">
-                  <span>Spray Longevity</span>
-                  <small>Skin / fabric performance</small>
+                  <span>Spray Longevity & Sillage</span>
+                  <small>Skin & fabric projection aura</small>
                 </label>
                 <input
                   type="text"
@@ -680,26 +701,77 @@ export default function CnoFormPage() {
                   onChange={(e) => setSprayLongevity(e.target.value)}
                   placeholder="e.g. 12h+"
                 />
+                <div className="ar-sensory-chips" style={{ marginTop: 6 }}>
+                  {['6h+ Intimate Scent', '8h+ Moderate Aura', '12h+ Radiant Sillage', '24h+ Beast Mode'].map((item) => (
+                    <button
+                      key={item}
+                      type="button"
+                      className="ar-sensory-chip"
+                      onClick={() => setSprayLongevity(item)}
+                      style={{
+                        fontSize: 10.5,
+                        padding: '2px 8px',
+                        background: sprayLongevity === item ? 'var(--ar-green-light)' : '#fdfbf7',
+                        borderColor: sprayLongevity === item ? 'var(--ar-green)' : 'var(--ar-border)',
+                        color: sprayLongevity === item ? 'var(--ar-green-dark)' : '#64748b',
+                      }}
+                    >
+                      ✦ {item}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
             {/* SECTION 3: REMARKS */}
             <div className="ar-form-section">
               <div className="ar-section-legend">
-                <span>03. Evaluation Remarks & Notes</span>
+                <span>03. Master Nose Remarks & Sensory Tasting Notes</span>
               </div>
 
               <div className="ar-field">
                 <label className="ar-label">
-                  <span>Remarks</span>
+                  <span>Sensory Evaluation Impressions</span>
                   <small>Maceration, top note punch, dry down character</small>
                 </label>
                 <textarea
                   className="ar-textarea"
+                  style={{ minHeight: '85px' }}
                   value={remarks}
                   onChange={(e) => setRemarks(e.target.value)}
                   placeholder="Write sensory impressions, dry-down longevity, feedback to supplier, or formulation verdict..."
                 />
+
+                {/* Quick Olfactory Notes Helper Chips */}
+                <div className="ar-sensory-chips" style={{ marginTop: 8 }}>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--ar-text-muted)', display: 'inline-flex', alignItems: 'center', gap: 4, width: '100%', marginBottom: 2 }}>
+                    <Sparkles size={12} style={{ color: 'var(--ar-gold)' }} />
+                    <span>Quick Master Nose Accord Impressions (Tap to add):</span>
+                  </span>
+                  {[
+                    'Sparkling Bergamot Opening',
+                    'Velvety Damask Rose',
+                    'Royal Dehn Al Oud',
+                    'Warm Ambergris Sillage',
+                    'Smoky Birch & Leather',
+                    'Creamy Mysore Sandalwood',
+                    'Bourbon Vanilla Drydown',
+                    'Spicy Cardamom Punch',
+                    'Silky White Musk Glow',
+                    'Powdery Tuscan Iris',
+                  ].map((phrase) => (
+                    <button
+                      key={phrase}
+                      type="button"
+                      className="ar-sensory-chip"
+                      onClick={() => {
+                        setRemarks((prev) => (prev ? `${prev}. ${phrase}` : phrase));
+                      }}
+                    >
+                      + {phrase}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 

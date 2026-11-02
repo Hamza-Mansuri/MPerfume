@@ -1,30 +1,42 @@
 /* ==========================================================================
-   AR (Admin Rights) Enterprise Design System
-   Matches Mredesign layout, colors, modern inputs & Motiwala Perfumes branding
-   Brand Accent: #99c229 | Dark Slate: #0f172a / #1e293b | Light Surface: #ffffff
+   AR (Admin Rights) Haute Parfumerie & Formulation Design System
+   Heavenly Fragrance Atelier Edition · Motiwala Perfumes
+   Olive Green: #8cb324 / #99c229 | Champagne Gold: #c6a56b | Silk Ivory: #faf8f5
    ========================================================================== */
 
 :root {
-  --ar-green: #99c229;
-  --ar-green-hover: #86ad1f;
-  --ar-green-light: rgba(153, 194, 41, 0.12);
-  --ar-green-ring: rgba(153, 194, 41, 0.28);
-  --ar-bg: #f8fafc;
+  --ar-green: #8cb324;
+  --ar-green-hover: #7aa01c;
+  --ar-green-dark: #365314;
+  --ar-green-light: rgba(140, 179, 36, 0.12);
+  --ar-green-ring: rgba(140, 179, 36, 0.28);
+  --ar-gold: #c6a56b;
+  --ar-gold-hover: #b59254;
+  --ar-gold-light: rgba(198, 165, 107, 0.12);
+  --ar-gold-border: rgba(198, 165, 107, 0.35);
+  --ar-gold-glow: 0 0 25px rgba(198, 165, 107, 0.18);
+  --ar-bg: #faf7f2;
   --ar-surface: #ffffff;
-  --ar-border: #e2e8f0;
-  --ar-border-input: #cbd5e1;
-  --ar-text-main: #0f172a;
-  --ar-text-muted: #64748b;
-  --ar-text-sub: #94a3b8;
-  --ar-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06);
-  --ar-sidebar-w: 260px;
+  --ar-surface-glass: rgba(255, 255, 255, 0.92);
+  --ar-border: #ede4d6;
+  --ar-border-input: #dcd0bf;
+  --ar-text-main: #191410;
+  --ar-text-muted: #6e6356;
+  --ar-text-sub: #9c9081;
+  --ar-shadow: 0 10px 30px -5px rgba(60, 42, 22, 0.05), 0 2px 8px rgba(0, 0, 0, 0.02);
+  --ar-shadow-lg: 0 20px 48px -10px rgba(50, 32, 14, 0.09), 0 4px 14px rgba(0, 0, 0, 0.03);
+  --ar-sidebar-w: 265px;
 }
 
-/* Base Wrapper */
+/* Base Wrapper - Heavenly Fragrance World Atmosphere */
 .ar-portal {
   display: flex;
   min-height: 100vh;
   background-color: var(--ar-bg);
+  background-image: 
+    radial-gradient(circle at 15% 10%, rgba(198, 165, 107, 0.06) 0%, transparent 40%),
+    radial-gradient(circle at 85% 30%, rgba(140, 179, 36, 0.05) 0%, transparent 45%),
+    radial-gradient(circle at 50% 90%, rgba(198, 165, 107, 0.04) 0%, transparent 50%);
   color: var(--ar-text-main);
   font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
@@ -306,6 +318,187 @@
   margin: 3px 0 0;
   font-size: 13px;
   color: var(--ar-text-muted);
+}
+
+/* ==========================================================================
+   HAUTE PARFUMERIE KPI METRIC CARDS
+   ========================================================================== */
+.ar-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.15rem;
+  margin-bottom: 1.5rem;
+}
+
+.ar-kpi-card {
+  background: #ffffff;
+  border: 1px solid var(--ar-border);
+  border-radius: 14px;
+  padding: 1.15rem 1.25rem;
+  box-shadow: var(--ar-shadow);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.ar-kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--ar-shadow-lg);
+  border-color: var(--ar-gold-border);
+}
+
+.ar-kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--ar-green);
+  opacity: 0.85;
+}
+
+.ar-kpi-card.gold::before {
+  background: var(--ar-gold);
+}
+
+.ar-kpi-card.amber::before {
+  background: #d97706;
+}
+
+.ar-kpi-card.emerald::before {
+  background: #059669;
+}
+
+.ar-kpi-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--ar-green-light);
+  color: var(--ar-green-dark);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.ar-kpi-card.gold .ar-kpi-icon {
+  background: var(--ar-gold-light);
+  color: var(--ar-gold);
+}
+
+.ar-kpi-card.amber .ar-kpi-icon {
+  background: rgba(217, 119, 6, 0.12);
+  color: #d97706;
+}
+
+.ar-kpi-card.emerald .ar-kpi-icon {
+  background: rgba(5, 150, 105, 0.12);
+  color: #059669;
+}
+
+.ar-kpi-content {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.ar-kpi-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ar-text-muted);
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ar-kpi-value {
+  font-size: 24px;
+  font-weight: 800;
+  font-family: 'Playfair Display', Georgia, serif;
+  color: var(--ar-text-main);
+  line-height: 1.1;
+}
+
+.ar-kpi-sub {
+  font-size: 11px;
+  color: var(--ar-text-sub);
+  margin-top: 3px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Sensory Tasting Chips */
+.ar-sensory-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.ar-sensory-chip {
+  background: #fdfbf7;
+  border: 1px solid var(--ar-border);
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ar-text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ar-sensory-chip:hover {
+  background: var(--ar-green-light);
+  border-color: var(--ar-green);
+  color: var(--ar-green-dark);
+  transform: translateY(-1px);
+}
+
+/* Sillage Projection Selector */
+.ar-sillage-group {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.ar-sillage-pill {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--ar-border-input);
+  background: #ffffff;
+  color: var(--ar-text-main);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ar-sillage-pill:hover {
+  border-color: var(--ar-green);
+  background: #fdfcf9;
+}
+
+.ar-sillage-pill.active {
+  background: var(--ar-green-light);
+  border-color: var(--ar-green);
+  color: var(--ar-green-dark);
+  font-weight: 700;
 }
 
 /* ==========================================================================

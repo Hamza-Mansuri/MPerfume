@@ -36,9 +36,13 @@ export default function Header() {
 
         {/* Desktop Navigation */}
         <nav className="desktop-nav">
+          <Link to="/">Home</Link>
           <Link to="/shop">Shop</Link>
-          <a href="#discover">AI Discovery</a>
-          <a href="#story">Our Story</a>
+          <Link to="/ai-discovery" style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+            <Sparkles size={14} style={{ color: 'var(--gold, #c6a56b)' }} />
+            <span>AI Discovery</span>
+          </Link>
+          <a href="/#story">Our Story</a>
           <Link to="/ar/cno" className="ar-nav-pill" title="Admin Rights - Business Portal">
             <ShieldCheck size={13} strokeWidth={2.5} />
             <span>AR (Admin Rights)</span>
@@ -105,18 +109,22 @@ export default function Header() {
 
         <nav className="mp-mobile-nav-links">
           <div className="mp-mobile-nav-section-label">Explore Catalog</div>
+          <Link to="/" className="mp-mobile-nav-item" onClick={() => setMobileNavOpen(false)}>
+            <span>Home</span>
+            <ChevronRight size={16} />
+          </Link>
           <Link to="/shop" className="mp-mobile-nav-item" onClick={() => setMobileNavOpen(false)}>
             <span>Shop All Fragrances</span>
             <ChevronRight size={16} />
           </Link>
-          <a href="#discover" className="mp-mobile-nav-item" onClick={() => setMobileNavOpen(false)}>
+          <Link to="/ai-discovery" className="mp-mobile-nav-item" onClick={() => setMobileNavOpen(false)}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <Sparkles size={16} style={{ color: 'var(--gold, #c6a56b)' }} />
               <span>AI Scent Concierge</span>
             </div>
             <ChevronRight size={16} />
-          </a>
-          <a href="#story" className="mp-mobile-nav-item" onClick={() => setMobileNavOpen(false)}>
+          </Link>
+          <a href="/#story" className="mp-mobile-nav-item" onClick={() => setMobileNavOpen(false)}>
             <span>Our Story & Heritage</span>
             <ChevronRight size={16} />
           </a>
