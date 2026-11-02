@@ -20,3 +20,4 @@ router.put('/:id', updateSample);
 router.delete('/:id', deleteSample);
 
 export default router;
+

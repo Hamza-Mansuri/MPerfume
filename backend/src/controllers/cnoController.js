@@ -190,3 +190,4 @@ export async function getProductSuggestions(req, res, next) {
     next(err);
   }
 }
+
