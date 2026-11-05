@@ -35,6 +35,7 @@ export default function ProductPage() {
   const product = local || remote;
 
   useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
     setActivePhoto(0);
     setQty(1);
     setRemote(null);
@@ -288,21 +289,45 @@ export default function ProductPage() {
           </div>
 
           {tab === 'Notes' && (
-            <div className="pdp-note-pyramid">
-              {Object.entries(hierarchy).map(([stage, values], i) => (
-                <div key={stage} style={{ border: '1px solid rgba(198, 165, 107, 0.35)', background: '#fffdfb' }}>
-                  <span className="pdp-note-number">0{i + 1}</span>
-                  <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>{stage} Notes</h3>
-                  <p>{values.length ? values.join(' · ') : 'Not listed'}</p>
-                  <small>
-                    {stage === 'Top'
-                      ? 'The first 15–30 minutes: sparkling head notes'
-                      : stage === 'Heart'
-                      ? 'Hours 1–4: the aromatic soul and character'
-                      : 'Hours 4–24+: the lingering royal foundation'}
-                  </small>
-                </div>
-              ))}
+            <div className="pdp-pyramid-container">
+              {/* 01: Top Notes (Peak) */}
+              <div className="pdp-pyramid-tier pdp-pyramid-top">
+                <span className="pdp-pyramid-badge">
+                  <Sparkles size={11} /> 01 · Top Notes
+                </span>
+                <h3 className="pdp-pyramid-notes">
+                  {hierarchy.Top.length ? hierarchy.Top.join(' · ') : 'Sparkling Accord'}
+                </h3>
+                <small className="pdp-pyramid-timeline">
+                  The first 15–30 minutes: sparkling head notes
+                </small>
+              </div>
+
+              {/* 02: Heart Notes (Soul) */}
+              <div className="pdp-pyramid-tier pdp-pyramid-heart">
+                <span className="pdp-pyramid-badge">
+                  <Layers size={11} /> 02 · Heart Notes
+                </span>
+                <h3 className="pdp-pyramid-notes">
+                  {hierarchy.Heart.length ? hierarchy.Heart.join(' · ') : 'Aromatic Soul'}
+                </h3>
+                <small className="pdp-pyramid-timeline">
+                  Hours 1–4: the aromatic soul and character
+                </small>
+              </div>
+
+              {/* 03: Base Notes (Foundation) */}
+              <div className="pdp-pyramid-tier pdp-pyramid-base">
+                <span className="pdp-pyramid-badge">
+                  <Leaf size={11} /> 03 · Base Notes
+                </span>
+                <h3 className="pdp-pyramid-notes">
+                  {hierarchy.Base.length ? hierarchy.Base.join(' · ') : 'Lingering Foundation'}
+                </h3>
+                <small className="pdp-pyramid-timeline">
+                  Hours 4–24+: the lingering royal foundation
+                </small>
+              </div>
             </div>
           )}
 

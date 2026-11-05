@@ -1,5 +1,13 @@
-import { lazy, Suspense } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { lazy, Suspense, useEffect } from 'react';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, [pathname]);
+  return null;
+}
 
 const HomePage = lazy(() => import('./pages/HomePage.jsx'));
 const ShopPage = lazy(() => import('./pages/ShopPage.jsx'));
@@ -34,6 +42,7 @@ export default function App() {
         </main>
       }
     >
+      <ScrollToTop />
       <Routes>
         {/* Public Storefront Routes */}
         <Route path="/" element={<HomePage />} />
